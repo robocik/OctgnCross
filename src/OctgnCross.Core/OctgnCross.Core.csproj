@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Octgn.Communication\Octgn.Communication.csproj" />
+      <ProjectReference Include="..\OctgnCross.DataNew\OctgnCross.DataNew.csproj" />
+      <ProjectReference Include="..\OctgnCross.Library\OctgnCross.Library.csproj" />
+      <ProjectReference Include="..\Online\OctgnCross.Online\OctgnCross.Online.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Avalonia" Version="11.1.3" />
+      <PackageReference Include="Avalonia.Diagnostics" Version="11.1.3" />
+      <PackageReference Include="DotNetZip" Version="1.16.0" />
+      <PackageReference Include="NuGet.Packaging" Version="6.11.0" />
+      <PackageReference Include="NuGet.Protocol" Version="6.11.0" />
+      <PackageReference Include="System.IO.Abstractions" Version="21.0.29" />
+    </ItemGroup>
+
+</Project>

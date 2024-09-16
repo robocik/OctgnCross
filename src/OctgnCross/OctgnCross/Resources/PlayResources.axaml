@@ -1,0 +1,8 @@
+﻿<controls:ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="https://github.com/avaloniaui"
+                    xmlns:converters1="clr-namespace:Octgn.Utils.Converters">
+
+    <!-- <BooleanToFontBoldConverter x:Key="BooleanToFontBoldConverter"/> -->
+    <converters1:BooleanInverterConverter x:Key="BooleanInverterConverter"/>
+</controls:ResourceDictionary>

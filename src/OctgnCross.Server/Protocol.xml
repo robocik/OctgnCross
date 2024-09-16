@@ -1,0 +1,540 @@
+<protocol xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="protocol.xsd">
+  <msg name="Error" server="true" client="true" anonymous="true">
+    <param name="msg" type="string" />
+  </msg>
+
+  <msg name="Boot" server="true">
+    <param name="player" type="Player"/>
+    <param name="reason" type="string"/>
+  </msg>
+
+  <msg name="Kick" client="true">
+    <param name="reason" type="string"/>
+  </msg>
+
+  <msg name="Hello" server="true" allowedbyspectator="true" anonymous="true">
+    <param name="nick" type="string" />
+    <param name="userId" type="string" />
+    <param name="pkey" type="ulong" />
+    <param name="client" type="string" />
+    <param name="clientVer" type="Version" />
+    <param name="octgnVer" type="Version" />
+    <param name="gameId" type="Guid" />
+    <param name="gameVersion" type="Version" />
+    <param name="password" type="string"/>
+    <param name="spectator" type="bool"/>
+  </msg>
+  <msg name="HelloAgain" server="true" anonymous="true">
+    <param name="pid" type="byte"/>
+    <param name="nick" type="string" />
+    <param name="userId" type="string" />
+    <param name="pkey" type="ulong" />
+    <param name="client" type="string" />
+    <param name="clientVer" type="Version" />
+    <param name="octgnVer" type="Version" />
+    <param name="gameId" type="Guid" />
+    <param name="gameVersion" type="Version" />
+    <param name="password" type="string"/>
+  </msg>
+  <msg name="Welcome" client="true">
+    <param name="id" type="byte" />
+    <param name="gameSessionId" type="Guid"/>
+    <param name="gameName" type="string"/>
+    <param name="waitForGameState" type="bool"/>
+  </msg>
+  <msg name="Settings" server="true" client="true" allowedbyspectator="true">
+    <param name="twoSidedTable" type="bool" />
+    <param name="allowSpectators" type="bool"/>
+    <param name="muteSpectators" type="bool"/>
+    <param name="allowCardList" type="bool"/>
+  </msg>
+  <msg name="PlayerSettings" server="true" client="true" allowedbyspectator="true">
+    <param name="playerId" type="PlayerOrSpectator" />
+    <param name="invertedTable" type="bool" />
+    <param name="spectator" type="bool"/>
+  </msg>
+  <msg name="NewPlayer" client="true">
+    <param name="id" type="byte" />
+    <param name="nick" type="string" />
+    <param name="userId" type="string" />
+    <param name="pkey" type="ulong" />
+    <param name="tableSide" type="bool"/>
+    <param name="spectator" type="bool"/>
+  </msg>
+  <msg name="Leave" client="true" server="true" allowedbyspectator="true">
+    <param name="player" type="PlayerOrSpectator" />
+  </msg>
+  <msg name="Start" client="true" server="true" />
+  <msg name="ResetReq" server="true" >
+    <param name="isSoft" type="bool" />
+  </msg>
+  <msg name="Reset" client="true">
+    <param name="player" type="Player" />
+    <param name="isSoft" type="bool" />
+  </msg>
+
+  <msg name="NextTurn" client="true" server="true">
+    <param name="player" type="Player" />
+    <param name="setActive" type="bool" />
+    <param name="force" type="bool" />
+  </msg>
+
+  <msg name="StopTurnReq" server="true">
+    <param name="turnNumber" type="int" />
+    <param name="stop" type="bool" />
+  </msg>
+  <msg name="StopTurn" client="true">
+    <param name="player" type="Player" />
+  </msg>
+
+  <msg name="SetPhaseReq" server="true">
+    <param name="nextPhase" type="byte" />
+    <param name="force" type="bool" />
+  </msg>
+  <msg name="SetPhase" client="true">
+    <param name="phase" type="byte" />
+    <param name="players" type="Player[]" />
+    <param name="force" type="bool" />
+  </msg>
+
+  <msg name="StopPhaseReq" server="true">
+    <param name="phase" type="byte" />
+    <param name="stop" type="bool" />
+  </msg>
+
+  <msg name="SetActivePlayer" client="true" server="true">
+    <param name="player" type="Player" />
+  </msg>
+
+  <msg name="ClearActivePlayer" client="true" server="true">
+  </msg>
+
+  <msg name="ChatReq" server="true" allowedbyspectator="true">
+    <param name="text" type="string" />
+  </msg>
+  <msg name="Chat" client="true" allowedbyspectator="true">
+    <param name="player" type="PlayerOrSpectator" />
+    <param name="text" type="string" />
+  </msg>
+  <msg name="PrintReq" server="true" allowedbyspectator="true">
+    <param name="text" type="string" />
+  </msg>
+  <msg name="Print" client="true" allowedbyspectator="true">
+    <param name="player" type="PlayerOrSpectator" />
+    <param name="text" type="string" />
+  </msg>
+
+  <msg name="RandomReq" server="true">
+    <param name="min" type="int" />
+    <param name="max" type="int" />
+  </msg>
+  <msg name="Random" client="true">
+    <param name="result" type="int" />
+  </msg>
+  <msg name="CounterReq" server="true">
+    <param name="counter" type="Counter" />
+    <param name="value" type="int" />
+    <param name="isScriptChange" type="bool"/>
+  </msg>
+  <msg name="Counter" client="true">
+    <param name="player" type="Player" />
+    <param name="counter" type="Counter" />
+    <param name="value" type="int" />
+    <param name="isScriptChange" type="bool"/>
+  </msg>
+
+  <msg name="LoadDeck" server="true" client="true">
+    <param name="id" type="int[]" />
+    <param name="type" type="Guid[]" />
+    <param name="group" type="Group[]" />
+    <param name="size" type="string[]" />
+    <param name="sleeve" type="string"/>
+    <param name="limited" type="bool"/>
+  </msg>
+  <msg name="CreateCard" server="true" client="true">
+    <param name="id" type="int[]" />
+    <param name="type" type="Guid[]" />
+    <param name="size" type="string[]" />
+    <param name="group" type="Group" />
+  </msg>
+  <msg name="CreateCardAt" server="true" client="true">
+    <param name="id" type="int[]" />
+    <param name="modelId" type="Guid[]" />
+    <param name="x" type="int[]" />
+    <param name="y" type="int[]" />
+    <param name="faceUp" type="bool" />
+    <param name="persist" type="bool" />
+  </msg>
+  <msg name="CreateAliasDeprecated" server="true" client="true">
+    <param name="id" type="int[]" />
+    <param name="type" type="ulong[]" />
+  </msg>
+
+  <msg name="MoveCardReq" server="true">
+    <param name="id" type="int[]" />
+    <param name="group" type="Group" />
+    <param name="idx" type="int[]" />
+    <param name="faceUp" type="bool[]" />
+    <param name="isScriptMove" type="bool"/>
+  </msg>
+  <msg name="MoveCard" client="true">
+    <param name="player" type="Player" />
+    <param name="id" type="int[]" />
+    <param name="group" type="Group" />
+    <param name="idx" type="int[]" />
+    <param name="faceUp" type="bool[]" />
+    <param name="isScriptMove" type="bool"/>
+  </msg>
+  <msg name="MoveCardAtReq" server="true">
+    <param name="id" type="int[]" />
+    <param name="x" type="int[]" />
+    <param name="y" type="int[]" />
+    <param name="idx" type="int[]" />
+    <param name="isScriptMove" type="bool"/>
+    <param name="faceUp" type="bool[]" />
+  </msg>
+  <msg name="MoveCardAt" client="true">
+    <param name="player" type="Player" />
+    <param name="id" type="int[]" />
+    <param name="x" type="int[]" />
+    <param name="y" type="int[]" />
+    <param name="idx" type="int[]" />
+    <param name="faceUp" type="bool[]" />
+    <param name="isScriptMove" type="bool"/>
+  </msg>
+  <msg name="PeekReq" server="true">
+    <param name="card" type="Card" />
+  </msg>
+  <msg name="Peek" client="true">
+    <param name="player" type="Player" />
+    <param name="card" type="Card" />
+  </msg>
+
+  <msg name="UntargetReq" server="true">
+    <param name="card" type="Card" />
+    <param name="isScriptChange" type="bool" />
+  </msg>
+  <msg name="Untarget" client="true">
+    <param name="player" type="Player" />
+    <param name="card" type="Card" />
+    <param name="isScriptChange" type="bool" />
+  </msg>
+  <msg name="TargetReq" server="true">
+    <param name="card" type="Card" />
+    <param name="isScriptChange" type="bool" />
+  </msg>
+  <msg name="Target" client="true">
+    <param name="player" type="Player" />
+    <param name="card" type="Card" />
+    <param name="isScriptChange" type="bool" />
+  </msg>
+  <msg name="TargetArrowReq" server="true">
+    <param name="card" type="Card" />
+    <param name="otherCard" type="Card" />
+    <param name="isScriptChange" type="bool" />
+  </msg>
+  <msg name="TargetArrow" client="true">
+    <param name="player" type="Player" />
+    <param name="card" type="Card" />
+    <param name="otherCard" type="Card" />
+    <param name="isScriptChange" type="bool" />
+  </msg>
+
+  <msg name="Highlight" server="true" client="true">
+    <param name="card" type="Card" />
+    <param name="color" type="Color?" />
+  </msg>
+
+  <msg name="TurnReq" server="true">
+    <param name="card" type="Card" />
+    <param name="up" type="bool" />
+  </msg>
+  <msg name="Turn" client="true">
+    <param name="player" type="Player" />
+    <param name="card" type="Card" />
+    <param name="up" type="bool" />
+  </msg>
+
+  <msg name="RotateReq" server="true">
+    <param name="card" type="Card" />
+    <param name="rot" type="CardOrientation" />
+  </msg>
+  <msg name="Rotate" client="true">
+    <param name="player" type="Player" />
+    <param name="card" type="Card" />
+    <param name="rot" type="CardOrientation" />
+  </msg>
+
+  <msg name="ShuffleDeprecated" client="true" server="true">
+    <param name="group" type="Group" />
+    <param name="card" type="int[]" />
+  </msg>
+  <msg name="Shuffled" client="true" server="true">
+    <param name="player" type="Player" />
+    <param name="group" type="Group" />
+    <param name="card" type="int[]" />
+    <param name="pos" type="short[]" />
+  </msg>
+  <msg name="UnaliasGrpDeprecated" client="true" server="true">
+    <param name="group" type="Group" />
+  </msg>
+  <msg name="UnaliasDeprecated" client="true" server="true">
+    <param name="card" type="int[]" />
+    <param name="type" type="ulong[]" />
+  </msg>
+  <msg name="AddMarkerReq" server="true">
+    <param name="card" type="Card" />
+    <param name="id" type="string" />
+    <param name="name" type="string" />
+    <param name="count" type="ushort" />
+    <param name="origCount" type="ushort"/>
+    <param name="isScriptChange" type="bool"/>
+  </msg>
+  <msg name="AddMarker" client="true">
+    <param name="player" type="Player" />
+    <param name="card" type="Card" />
+    <param name="id" type="string" />
+    <param name="name" type="string" />
+    <param name="count" type="ushort" />
+    <param name="origCount" type="ushort"/>
+    <param name="isScriptChange" type="bool"/>
+  </msg>
+  <msg name="RemoveMarkerReq" server="true">
+    <param name="card" type="Card" />
+    <param name="id" type="string" />
+    <param name="name" type="string" />
+    <param name="count" type="ushort" />
+    <param name="origCount" type="ushort"/>
+    <param name="isScriptChange" type="bool"/>
+  </msg>
+  <msg name="RemoveMarker" client="true">
+    <param name="player" type="Player" />
+    <param name="card" type="Card" />
+    <param name="id" type="string" />
+    <param name="name" type="string" />
+    <param name="count" type="ushort" />
+    <param name="origCount" type="ushort"/>
+    <param name="isScriptChange" type="bool"/>
+  </msg>
+  <msg name="TransferMarkerReq" server="true">
+    <param name="from" type="Card" />
+    <param name="to" type="Card" />
+    <param name="id" type="string" />
+    <param name="name" type="string" />
+    <param name="count" type="ushort" />
+    <param name="origCount" type="ushort"/>
+    <param name="isScriptChange" type="bool"/>
+  </msg>
+  <msg name="TransferMarker" client="true">
+    <param name="player" type="Player" />
+    <param name="from" type="Card" />
+    <param name="to" type="Card" />
+    <param name="id" type="string" />
+    <param name="name" type="string" />
+    <param name="count" type="ushort" />
+    <param name="origCount" type="ushort"/>
+    <param name="isScriptChange" type="bool"/>
+  </msg>
+
+  <msg name="PassToReq" server="true">
+    <param name="id" type="ControllableObject" />
+    <param name="to" type="Player" />
+    <param name="requested" type="bool" />
+  </msg>
+  <msg name="PassTo" client="true">
+    <param name="player" type="Player" />
+    <param name="id" type="ControllableObject" />
+    <param name="to" type="Player" />
+    <param name="requested" type="bool" />
+  </msg>
+  <msg name="TakeFromReq" server="true">
+    <param name="id" type="ControllableObject" />
+    <param name="from" type="Player" />
+  </msg>
+  <msg name="TakeFrom" client="true">
+    <param name="id" type="ControllableObject" />
+    <param name="to" type="Player" />
+  </msg>
+  <msg name="DontTakeReq" server="true">
+    <param name="id" type="ControllableObject" />
+    <param name="to" type="Player" />
+  </msg>
+  <msg name="DontTake" client="true">
+    <param name="id" type="ControllableObject" />
+  </msg>
+
+  <msg name="FreezeCardsVisibility" server="true" client="true">
+    <param name="group" type="Group" />
+  </msg>
+  <msg name="GroupVisReq" server="true">
+    <param name="group" type="Group" />
+    <param name="defined" type="bool" />
+    <param name="visible" type="bool" />
+  </msg>
+  <msg name="GroupVis" client="true">
+    <param name="player" type="Player" />
+    <param name="group" type="Group" />
+    <param name="defined" type="bool" />
+    <param name="visible" type="bool" />
+  </msg>
+  <msg name="GroupVisAddReq" server="true" allowedbyspectator="true" >
+    <param name="group" type="Group" />
+    <param name="who" type="PlayerOrSpectator" />
+  </msg>
+  <msg name="GroupVisAdd" client="true" allowedbyspectator="true">
+    <param name="player" type="Player" />
+    <param name="group" type="Group" />
+    <param name="who" type="PlayerOrSpectator" />
+  </msg>
+  <msg name="GroupVisRemoveReq" server="true" allowedbyspectator="true">
+    <param name="group" type="Group" />
+    <param name="who" type="PlayerOrSpectator" />
+  </msg>
+  <msg name="GroupVisRemove" client="true" allowedbyspectator="true">
+    <param name="player" type="Player" />
+    <param name="group" type="Group" />
+    <param name="who" type="PlayerOrSpectator" />
+  </msg>
+
+  <msg name="LookAtReq" server="true">
+    <param name="uid" type="int" />
+    <param name="group" type="Group" />
+    <param name="look" type="bool" />
+  </msg>
+  <msg name="LookAt" client="true">
+    <param name="player" type="Player" />
+    <param name="uid" type="int" />
+    <param name="group" type="Group" />
+    <param name="look" type="bool" />
+  </msg>
+  <msg name="LookAtTopReq" server="true">
+    <param name="uid" type="int" />
+    <param name="group" type="Group" />
+    <param name="count" type="int" />
+    <param name="look" type="bool" />
+  </msg>
+  <msg name="LookAtTop" client="true">
+    <param name="player" type="Player" />
+    <param name="uid" type="int" />
+    <param name="group" type="Group" />
+    <param name="count" type="int" />
+    <param name="look" type="bool" />
+  </msg>
+  <msg name="LookAtBottomReq" server="true">
+    <param name="uid" type="int" />
+    <param name="group" type="Group" />
+    <param name="count" type="int" />
+    <param name="look" type="bool" />
+  </msg>
+  <msg name="LookAtBottom" client="true">
+    <param name="player" type="Player" />
+    <param name="uid" type="int" />
+    <param name="group" type="Group" />
+    <param name="count" type="int" />
+    <param name="look" type="bool" />
+  </msg>
+
+  <msg name="StartLimitedReq" server="true">
+    <param name="packs" type="Guid[]" />
+  </msg>
+  <msg name="StartLimited" client="true">
+    <param name="player" type="Player" />
+    <param name="packs" type="Guid[]" />
+  </msg>
+  <msg name="CancelLimitedReq" server="true"></msg>
+  <msg name="CancelLimited" client="true">
+    <param name="player" type="Player" />
+  </msg>
+  <msg name="CardSwitchTo" server="true" client="true">
+    <param name="player" type="Player"/>
+    <param name="card" type="Card" />
+    <param name="alternate" type="string" />
+  </msg>
+  <msg name="PlayerSetGlobalVariable" server="true" client="true">
+    <param name="player" type="Player"/>
+    <param name="name" type="string"/>
+    <param name="oldval" type="string"/>
+    <param name="val" type="string"/>
+  </msg>
+  <msg name="SetGlobalVariable" server="true" client="true">
+    <param name="name" type="string"/>
+    <param name="oldval" type="string"/>
+    <param name="val" type="string"/>
+  </msg>
+  <msg name="SwitchWithAlternate">
+  </msg>
+  <msg name="Ping" server="true" client="true" allowedbyspectator="true" anonymous="true"></msg>
+  <msg name="IsTableBackgroundFlipped" server="true" client="true">
+    <param name="isFlipped" type="bool"/>
+  </msg>
+  <msg name="PlaySound" client="true" server="true">
+    <param name="player" type="Player"/>
+    <param name="name" type="string"/>
+  </msg>
+  <msg name="Ready" client="true" server="true" allowedbyspectator="true">
+    <param name="player" type="PlayerOrSpectator"/>
+  </msg>
+  <msg name="PlayerState" client="true" allowedbyspectator="true">
+    <param name="player" type="PlayerOrSpectator"/>
+    <param name="state" type="byte"/>
+  </msg>
+  <msg name="RemoteCall" client="true" server="true">
+    <param name="player" type="Player"/>
+    <param name="function" type="string"/>
+    <param name="args" type="string"/>
+  </msg>
+  <msg name="GameStateReq" client="true" server="true" allowedbyspectator="true">
+    <param name="player" type="PlayerOrSpectator"/>
+  </msg>
+  <msg name="GameState" client="true" server="true" allowedbyspectator="true">
+    <param name="toPlayer" type="Player"/>
+    <param name="state" type="string"/>
+  </msg>
+  <msg name="DeleteCard" client="true" server="true">
+    <param name="card" type="Card"/>
+    <param name="player" type="Player"/>
+  </msg>
+  <msg name="PlayerDisconnect" client="true" allowedbyspectator="true">
+    <param name="player" type="PlayerOrSpectator"/>
+  </msg>
+  <msg name="AddPacksReq" server="true">
+    <param name="packs" type="Guid[]" />
+    <param name="selfOnly" type="bool" />
+  </msg>
+  <msg name="AddPacks" client="true">
+    <param name="player" type="Player"/>
+    <param name="packs" type="Guid[]" />
+    <param name="selfOnly" type="bool" />
+  </msg>
+  <msg name="AnchorCard" client="true" server="true">
+    <param name="id" type="Card" />
+    <param name="player" type="Player" />
+    <param name="anchor" type="bool" />
+  </msg>
+  <msg name="SetCardProperty" client="true" server="true">
+    <param name="id" type="Card" />
+    <param name="player" type="Player" />
+    <param name="name" type="string"/>
+    <param name="val" type="string"/>
+    <param name="valtype" type="string"/>
+  </msg>
+  <msg name="ResetCardProperties" client="true" server="true">
+    <param name="id" type="Card" />
+    <param name="player" type="Player" />
+  </msg>
+  <msg name="Filter" server="true" client="true">
+    <param name="card" type="Card" />
+    <param name="color" type="Color?" />
+  </msg>
+  <msg name="SetBoard" client="true" server="true">
+    <param name="player" type="Player" />
+    <param name="name" type="string" />
+  </msg>
+  <msg name="RemoveBoard" client="true" server="true">
+    <param name="player" type="Player" />
+  </msg>
+	<msg name="SetPlayerColor" client="true" server="true">
+		<param name="player" type="Player"/>
+		<param name="color" type="string"/>
+	</msg>
+</protocol>

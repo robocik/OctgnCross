@@ -4,7 +4,14 @@ namespace Octgn.Utils;
 
 public class ImportFile
 {
-    internal string Filename { get; set; }
+    internal string Filename
+    {
+        get
+        {
+            return File?.Path.AbsoluteUri;
+        }
+    }
+
     public ImportFileStatus Status { get; set; }
     public string Message { get; set; }
 

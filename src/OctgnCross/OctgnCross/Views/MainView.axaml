@@ -6,6 +6,7 @@
              xmlns:login="clr-namespace:Octgn.Tabs.Login"
              xmlns:converters="clr-namespace:Octgn.Utils.Converters"
              xmlns:gameManagement="clr-namespace:OctgnCross.Tabs.GameManagement"
+             xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Octgn.Views.MainView"  x:Name="me"
              x:DataType="vm:MainViewModel">
@@ -26,8 +27,10 @@
     <!--         <TextBlock Margin="5">This is tab 3 content</TextBlock> -->
     <!--     </TabItem> -->
     <!-- </TabControl> -->
-    
-    <Grid x:Name="GridMain">
+    <dialogHostAvalonia:DialogHost Identifier="MainDialogHost"
+                                   DialogMargin="16"
+                                   dialogHostAvalonia:DialogHostStyle.CornerRadius="8">
+        <Grid x:Name="GridMain">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="100*" MinWidth="560"/>
         <!--<ColumnDefinition Width="0"/>
@@ -104,6 +107,8 @@
         </Border>
     </StackPanel>
 </Grid>
+    </dialogHostAvalonia:DialogHost>
+    
   
  
 </UserControl>

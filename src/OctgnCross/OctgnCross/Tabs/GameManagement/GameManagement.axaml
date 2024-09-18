@@ -64,7 +64,7 @@
                             <RowDefinition Height="50*"/>
                         </Grid.RowDefinitions>
                         <Button Width="100" x:Name="ButtonInstallUninstall" DataContext="{Binding}"
-                                Content="{Binding InstallButtonText}"
+                                Content="{Binding InstallButtonText}" IsVisible="{Binding Path=IsSelected,RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type ListBoxItem}}}"
                                 Click="ButtonInstallUninstallClick"
                                 IsEnabled="{Binding ElementName=Me,Path=ButtonsEnabled}">
                             <!-- <Button.Style> -->

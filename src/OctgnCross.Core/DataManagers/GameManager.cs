@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using Avalonia.Platform.Storage;
 
 // using NuGet;
 
@@ -15,7 +16,10 @@ using Octgn.Library.Exceptions;
 using Octgn.Library.ExtensionMethods;
 
 using log4net;
+using NuGet.Protocol.Core.Types;
 using Octgn.Library.Localization;
+using Octgn.Library.Networking;
+using OctgnCross.Core;
 
 namespace Octgn.Core.DataManagers
 {
@@ -82,33 +86,34 @@ namespace Octgn.Core.DataManagers
                 UninstallGame(g);
         }
 
-        public void InstallGame(IPackage package, Action<int, int> onProgressUpdate = null)
+        public async Task InstallGame(GameInfo gameInfo,
+            Action<int, int> onProgressUpdate = null)
         {
             if (onProgressUpdate == null) onProgressUpdate = (i, i1) => { };
 
-            Log.InfoFormat("Installing game {0} {1}", package.Id, package.Title);
+            Log.InfoFormat("Installing game {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
             try
             {
                 onProgressUpdate(-1, 1);
-                Log.InfoFormat("Creating path {0} {1}", package.Id, package.Title);
+                Log.InfoFormat("Creating path {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                 var dirPath = Path.GetTempPath();
                 dirPath = Path.Combine(dirPath, "o8ginstall-" + Guid.NewGuid());
-                Log.InfoFormat("Extracting package {0} {1} {2}", dirPath, package.Id, package.Title);
-                GameFeedManager.Get().ExtractPackage(dirPath, package, onProgressUpdate);
+                Log.InfoFormat("Extracting package {0} {1} {2}", dirPath, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
+                await GameFeedManager.Get().ExtractPackage(dirPath, gameInfo,onProgressUpdate);
                 onProgressUpdate(-1, 1);
-                Log.InfoFormat("Making def path {0} {1}", package.Id, package.Title);
+                Log.InfoFormat("Making def path {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                 var defPath = Path.Combine(dirPath, "def");
                 if (!Directory.Exists(defPath))
                 {
-                    Log.WarnFormat("Def path doesn't exist in the game package {0} {1}", package.Id, package.Title);
+                    Log.WarnFormat("Def path doesn't exist in the game package {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                     return;
                 }
                 var di = new DirectoryInfo(defPath);
-                Log.InfoFormat("Copying temp files {0} {1}", package.Id, package.Title);
+                Log.InfoFormat("Copying temp files {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                 var files = di.GetFiles("*", SearchOption.AllDirectories).ToArray();
                 var curFileNum = 0;
                 onProgressUpdate(curFileNum, files.Length);
-                var packagePath = Path.Combine(Config.Instance.Paths.DatabasePath, package.Id);
+                var packagePath = Path.Combine(Config.Instance.Paths.DatabasePath, gameInfo.Package.Identity.Id);
                 var packagePathInfo = new DirectoryInfo(packagePath);
                 if (packagePathInfo.Exists)
                 {
@@ -136,45 +141,45 @@ namespace Octgn.Core.DataManagers
                 {
                     try
                     {
-                        Log.DebugFormat("Copying temp file {0} {1} {2}", f.FullName, package.Id, package.Title);
+                        Log.DebugFormat("Copying temp file {0} {1} {2}", f.FullName, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                         var relPath = f.FullName.Replace(di.FullName, "");
                         relPath = relPath.TrimStart('\\', '/');
-                        var newPath = Path.Combine(Config.Instance.Paths.DatabasePath, package.Id);
+                        var newPath = Path.Combine(Config.Instance.Paths.DatabasePath, gameInfo.Package.Identity.Id);
                         newPath = Path.Combine(newPath, relPath);
                         var newFileInfo = new FileInfo(newPath);
                         if (newFileInfo.Directory != null)
                         {
-                            Log.DebugFormat("Creating directory {0} {1} {2}", newFileInfo.Directory.FullName, package.Id, package.Title);
+                            Log.DebugFormat("Creating directory {0} {1} {2}", newFileInfo.Directory.FullName, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                             Directory.CreateDirectory(newFileInfo.Directory.FullName);
                         }
-                        Log.DebugFormat("Copying file {0} {1} {2} {3}", f.FullName, newPath, package.Id, package.Title);
+                        Log.DebugFormat("Copying file {0} {1} {2} {3}", f.FullName, newPath, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                         f.MegaCopyTo(newPath);
-                        Log.DebugFormat("File copied {0} {1} {2} {3}", f.FullName, newPath, package.Id, package.Title);
+                        Log.DebugFormat("File copied {0} {1} {2} {3}", f.FullName, newPath, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                         curFileNum++;
                         onProgressUpdate(curFileNum, files.Length);
 
                     }
                     catch(Exception e)
                     {
-                        Log.Warn(String.Format("InstallGame 1 {0} {1} {2}", f.FullName, package.Id, package.Title), e);
+                        Log.Warn(String.Format("InstallGame 1 {0} {1} {2}", f.FullName, gameInfo.Package.Identity.Id, gameInfo.Package.Title), e);
                         throw;
                     }
                 }
                 onProgressUpdate(-1, 1);
                 //Sets//setid//Cards//Proxies
 
-                var setsDir = Path.Combine(Config.Instance.Paths.DatabasePath, package.Id, "Sets");
-                var imageSetsDir = Path.Combine(Config.Instance.ImageDirectoryFull, package.Id, "Sets");
+                var setsDir = Path.Combine(Config.Instance.Paths.DatabasePath, gameInfo.Package.Identity.Id, "Sets");
+                var imageSetsDir = Path.Combine(Config.Instance.ImageDirectoryFull, gameInfo.Package.Identity.Id, "Sets");
                 if (!Directory.Exists(imageSetsDir))
                 {
                     Directory.CreateDirectory(imageSetsDir);
                 }
 
-                var game = GameManager.Get().GetById(new Guid(package.Id));
+                var game = GameManager.Get().GetById(new Guid(gameInfo.Package.Identity.Id));
                 if (game == null)
-                    throw new UserMessageException(L.D.Exception__CanNotInstallGameTryRestart_Format, package.Title);
+                    throw new UserMessageException(L.D.Exception__CanNotInstallGameTryRestart_Format, gameInfo.Package.Title);
 
-                Log.InfoFormat("Installing plugins {0} {1}", package.Id, package.Title);
+                Log.InfoFormat("Installing plugins {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                 if (Directory.Exists(Path.Combine(game.InstallPath, "Plugins")))
                 {
                     var pluginFiles = new DirectoryInfo(Path.Combine(game.InstallPath, "Plugins")).GetFiles("*.dll", SearchOption.AllDirectories).ToArray();
@@ -184,14 +189,14 @@ namespace Octgn.Core.DataManagers
                     {
                         try
                         {
-                            Log.DebugFormat("Found plugin file {0} {1} {2}", f.FullName, package.Id, package.Title);
+                            Log.DebugFormat("Found plugin file {0} {1} {2}", f.FullName, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                             var relPath = f.FullName.Replace(new DirectoryInfo(Path.Combine(game.InstallPath, "Plugins")).FullName, "").TrimStart('\\');
                             var newPath = Path.Combine(Config.Instance.Paths.PluginPath, relPath);
-                            Log.DebugFormat("Creating directories {0} {1} {2}", f.FullName, package.Id, package.Title);
+                            Log.DebugFormat("Creating directories {0} {1} {2}", f.FullName, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                             if (new DirectoryInfo(newPath).Exists)
                                 Directory.Move(newPath, Config.Instance.Paths.GraveyardPath);
                             Directory.CreateDirectory(new FileInfo(newPath).Directory.FullName);
-                            Log.DebugFormat("Copying plugin to {0} {1} {2} {3}", f.FullName, newPath, package.Id, package.Title);
+                            Log.DebugFormat("Copying plugin to {0} {1} {2} {3}", f.FullName, newPath, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                             f.MegaCopyTo(newPath);
                             curPluginFileNum++;
                             onProgressUpdate(curPluginFileNum, pluginFiles.Length);
@@ -199,7 +204,7 @@ namespace Octgn.Core.DataManagers
                         }
                         catch (Exception e)
                         {
-                            Log.Warn(String.Format("InstallGame Plugin {0} {1} {2}", f.FullName, package.Id, package.Title), e);
+                            Log.Warn(String.Format("InstallGame Plugin {0} {1} {2}", f.FullName, gameInfo.Package.Identity.Id, gameInfo.Package.Title), e);
                             throw;
                         }
                     }
@@ -221,27 +226,27 @@ namespace Octgn.Core.DataManagers
                     {
                         try
                         {
-                            Log.DebugFormat("Found deck file {0} {1} {2} {3}", deck.FullName, setsDir, package.Id,package.Title);
+                            Log.DebugFormat("Found deck file {0} {1} {2} {3}", deck.FullName, setsDir, gameInfo.Package.Identity.Id,gameInfo.Package.Title);
                             var relPath = deck.FullName.Replace(set.DeckDirectory.FullName, "").TrimStart('\\');
                             var newPath = Path.Combine(Config.Instance.Paths.DeckPath, game.Name, relPath);
-                            Log.DebugFormat("Creating directories {0} {1} {2} {3}", deck.FullName, setsDir, package.Id,package.Title);
+                            Log.DebugFormat("Creating directories {0} {1} {2} {3}", deck.FullName, setsDir, gameInfo.Package.Identity.Id,gameInfo.Package.Title);
                             Directory.CreateDirectory(new FileInfo(newPath).Directory.FullName);
                             Log.DebugFormat("Copying deck to {0} {1} {2} {3} {4}", deck.FullName, newPath, setsDir,
-                                package.Id, package.Title);
+                                gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                             deck.MegaCopyTo(newPath);
                             curSetDeckNum++;
                             onProgressUpdate(curSetDeckNum, max);
                         }
                         catch (Exception e)
                         {
-                            Log.Warn(String.Format("InstallGame 3 {0} {1} {2} {3}", deck.FullName, setsDir, package.Id,package.Title), e);
+                            Log.Warn(String.Format("InstallGame 3 {0} {1} {2} {3}", deck.FullName, setsDir, gameInfo.Package.Identity.Id,gameInfo.Package.Title), e);
                             throw;
                         }
                     }
                 }
                 onProgressUpdate(-1, 1);
 
-                Log.InfoFormat("Deleting proxy cards {0} {1} {2}", setsDir, package.Id, package.Title);
+                Log.InfoFormat("Deleting proxy cards {0} {1} {2}", setsDir, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                 // Clear out all proxies if they exist
                 var proxyFiles = new DirectoryInfo(imageSetsDir).GetDirectories().Select(x => new DirectoryInfo(Path.Combine(x.FullName, "Cards", "Proxies"))).Where(x => x.Exists).ToArray();
                 var currentProxyFilesNum = 0;
@@ -251,9 +256,9 @@ namespace Octgn.Core.DataManagers
                     try
                     {
                         var pstring = pdir.FullName;
-                        Log.DebugFormat("Deleting proxy dir {0} {1} {2}", pdir, package.Id, package.Title);
+                        Log.DebugFormat("Deleting proxy dir {0} {1} {2}", pdir, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                         pdir.MoveTo(Config.Instance.Paths.GraveyardPath);
-                        Log.DebugFormat("Deleted proxy dir {0} {1} {2}", pdir, package.Id, package.Title);
+                        Log.DebugFormat("Deleted proxy dir {0} {1} {2}", pdir, gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                         Directory.CreateDirectory(pstring);
                     }
                     catch (Exception)
@@ -264,9 +269,9 @@ namespace Octgn.Core.DataManagers
                     onProgressUpdate(currentProxyFilesNum, proxyFiles.Length);
                 }
                 onProgressUpdate(-1, 1);
-                Log.InfoFormat("Fire game list changed {0} {1}", package.Id, package.Title);
+                Log.InfoFormat("Fire game list changed {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
                 this.OnGameListChanged();
-                Log.InfoFormat("Game list changed fired {0} {1}", package.Id, package.Title);
+                Log.InfoFormat("Game list changed fired {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
 
                 //copy images over to imagedatabase
                 var cardImageList = new DirectoryInfo(setsDir)
@@ -291,7 +296,7 @@ namespace Octgn.Core.DataManagers
                 X.Instance.ForEachProgress(cardImageList.Length, cardImageList,
                     x =>
                     {
-                        string copyDirPath = Path.Combine(Config.Instance.ImageDirectoryFull, package.Id, "Sets", x.SetDirectory.Name, "Cards");
+                        string copyDirPath = Path.Combine(Config.Instance.ImageDirectoryFull, gameInfo.Package.Identity.Id, "Sets", x.SetDirectory.Name, "Cards");
                         if (!Directory.Exists(copyDirPath))
                         {
                             Directory.CreateDirectory(copyDirPath);
@@ -303,23 +308,24 @@ namespace Octgn.Core.DataManagers
             }
             finally
             {
-                Log.InfoFormat("Done {0} {1}", package.Id, package.Title);
+                Log.InfoFormat("Done {0} {1}", gameInfo.Package.Identity.Id, gameInfo.Package.Title);
             }
         }
 
-        public void Installo8c(string filename)
+        public async Task Installo8c(IStorageFile file)
         {
             try
             {
-                Log.InfoFormat("Checking if zip file {0}", filename);
-                if (!Ionic.Zip.ZipFile.IsZipFile(filename)) throw new UserMessageException(L.D.Exception__CanNotInstallo8cInvalid_Format, filename);
-                Log.InfoFormat("Checking if zip file {0}", filename);
-                if (!Ionic.Zip.ZipFile.CheckZip(filename)) throw new UserMessageException(L.D.Exception__CanNotInstallo8cInvalid_Format, filename);
+                Log.InfoFormat("Checking if zip file {0}", file.Name);
+                using var stream=await file.OpenReadAsync();
+                //if (!Ionic.Zip.ZipFile.IsZipFile(stream,true)) throw new UserMessageException(L.D.Exception__CanNotInstallo8cInvalid_Format, file.Name);
+                // Log.InfoFormat("Checking if zip file {0}", file.Name);
+                // if (!Ionic.Zip.ZipFile.CheckZip(filename)) throw new UserMessageException(L.D.Exception__CanNotInstallo8cInvalid_Format, file.Name);
 
                 Guid gameGuid = Guid.Empty;
 
                 
-                Log.InfoFormat("Reading zip file {0}", filename);
+                Log.InfoFormat("Reading zip file {0}", file.Name);
                 // using (ZipArchive archive = ZipFile.OpenRead(filename))
                 // {
                 //     var result = from currEntry in archive.Entries
@@ -334,14 +340,14 @@ namespace Octgn.Core.DataManagers
                 //     }
                 // } 
                 
-                using (var zip = Ionic.Zip.ZipFile.Read(filename))
+                using (var zip = Ionic.Zip.ZipFile.Read(stream))
                 {
-                    Log.InfoFormat("Getting zip files {0}", filename);
+                    Log.InfoFormat("Getting zip files {0}", file.Name);
                     var selection = from e in zip.Entries where !e.IsDirectory select e;
 
                     foreach (var e in selection)
                     {
-                        Log.DebugFormat("Checking zip file {0} {1}", e.FileName, filename);
+                        Log.DebugFormat("Checking zip file {0} {1}", e.FileName, file.Name);
                         if (e.FileName.ToLowerInvariant().EndsWith("db"))
                         {
                             continue;
@@ -349,19 +355,19 @@ namespace Octgn.Core.DataManagers
                         bool extracted = extract(e, out gameGuid, gameGuid);
                         if (!extracted)
                         {
-                            Log.Warn(string.Format("Invalid entry in {0}. Entry: {1}.", filename, e.FileName));
-                            throw new UserMessageException(L.D.Exception__CanNotInstallo8cInvalid_Format, filename);
+                            Log.Warn(string.Format("Invalid entry in {0}. Entry: {1}.", file.Name, e.FileName));
+                            throw new UserMessageException(L.D.Exception__CanNotInstallo8cInvalid_Format, file.Name);
                         }
-                        Log.DebugFormat("Extracted {0} {1}", e.FileName, filename);
+                        Log.DebugFormat("Extracted {0} {1}", e.FileName, file.Name);
                     }
                 }
-                Log.InfoFormat("Installed successfully {0}", filename);
+                Log.InfoFormat("Installed successfully {0}", file.Name);
 
                 //zipFile.ExtractAll(Config.Instance.Paths.DatabasePath,ExtractExistingFileAction.OverwriteSilently);
             }
             catch (Ionic.Zip.ZipException e)
             {
-                throw new UserMessageException(String.Format(L.D.Exception__CanNotInstallo8cInvalid_Format, filename),e);
+                throw new UserMessageException(String.Format(L.D.Exception__CanNotInstallo8cInvalid_Format, file.Name),e);
             }
             catch (UserMessageException e)
             {

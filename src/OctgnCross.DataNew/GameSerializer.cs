@@ -1377,7 +1377,7 @@ namespace Octgn.DataNew
                 if (setSchema != null) return setSchema;
 
                 var libAss = Assembly.GetAssembly(typeof(Paths));
-                var schemaStream = libAss.GetManifestResourceStream("Octgn.Library.Schemas.CardSet.xsd");
+                var schemaStream = libAss.GetManifestResourceStream("OctgnCross.Library.Schemas.CardSet.xsd");
                 var schema = XmlSchema.Read(schemaStream, (sender, args) => Console.WriteLine(args.Exception));
                 return schema;
             }

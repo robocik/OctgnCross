@@ -23,8 +23,10 @@ using System.Threading.Tasks;
 using System.Threading;
 using NuGet.Common;
 using NuGet.Configuration;
+using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+using OctgnCross.Core;
 
 namespace Octgn.Core
 {
@@ -37,8 +39,8 @@ namespace Octgn.Core
         void AddFeed( string name, string feed, string username, string password );
         void RemoveFeed( string name );
         FeedValidationResult ValidateFeedUrl( string url, string username, string password );
-        Task<IEnumerable<IPackageSearchMetadata>> GetPackagesAsync(NamedUrl url);
-        void ExtractPackage( string directory, IPackage package, Action<int, int> onProgressUpdate = null );
+        Task<IEnumerable<GameInfo>> GetPackagesAsync(NamedUrl url);
+        Task ExtractPackage(string directory,GameInfo game, Action<int, int> onProgressUpdate = null);
         void AddToLocalFeed( string file );
         event EventHandler OnUpdateFeedList;
         TimeSpan FeedUpdateTimeout { get; set; }
@@ -127,48 +129,48 @@ namespace Octgn.Core
             //
             //         foreach (var package in packages)
             //         {
-            //             if (!games.ContainsKey(package.Id))
+            //             if (!games.ContainsKey(game.Package.Id))
             //                 continue;
             //
-            //             var game = games[package.Id];
+            //             var game = games[game.Package.Id];
             //             var gameVersion = new SemanticVersion(game.Version);
             //
-            //             if (package.Version.CompareTo(gameVersion) < 1)
+            //             if (game.Package.Version.CompareTo(gameVersion) < 1)
             //                 continue;
             //
-            //             if (updates.ContainsKey(package.Id))
+            //             if (updates.ContainsKey(game.Package.Id))
             //             {
-            //                 var fetched = updates.TryGetValue(package.Id, out var existingUpdate);
+            //                 var fetched = updates.TryGetValue(game.Package.Id, out var existingUpdate);
             //                 if (fetched)
             //                 {
-            //                     if (package.Version.CompareTo(existingUpdate.Version) < 1)
+            //                     if (game.Package.Version.CompareTo(existingUpdate.Version) < 1)
             //                         continue;
             //
-            //                     var updated = updates.TryUpdate(package.Id, package, existingUpdate);
+            //                     var updated = updates.TryUpdate(game.Package.Id, package, existingUpdate);
             //                     if (updated)
             //                     {
-            //                         Log.DebugFormat("Replacing update for {0} from {1} {2}, version {3} -> {4}", package.Id, feed.Name, feed.Url, existingUpdate.Version, package.Version);
+            //                         Log.DebugFormat("Replacing update for {0} from {1} {2}, version {3} -> {4}", game.Package.Id, feed.Name, feed.Url, existingUpdate.Version, game.Package.Version);
             //                     }
             //                     else 
             //                     {
-            //                         Log.DebugFormat("Could not overwrite update for {0} from {1} {2}, version {3} -> {4}", package.Id, feed.Name, feed.Url, existingUpdate.Version, package.Version);
+            //                         Log.DebugFormat("Could not overwrite update for {0} from {1} {2}, version {3} -> {4}", game.Package.Id, feed.Name, feed.Url, existingUpdate.Version, game.Package.Version);
             //                     }
             //                 }
             //                 else
             //                 {
-            //                     Log.DebugFormat("Could not fetch update for {0} from existing data", package.Id);
+            //                     Log.DebugFormat("Could not fetch update for {0} from existing data", game.Package.Id);
             //                 }
             //             }
             //             else
             //             {
-            //                 var added = updates.TryAdd(package.Id, package);
+            //                 var added = updates.TryAdd(game.Package.Id, package);
             //                 if (added)
             //                 {
-            //                     Log.DebugFormat("Queueing update for {0} from {1} {2}", package.Id, feed.Name, feed.Url);
+            //                     Log.DebugFormat("Queueing update for {0} from {1} {2}", game.Package.Id, feed.Name, feed.Url);
             //                 }
             //                 else
             //                 {
-            //                     Log.DebugFormat("Could not add update for {0} from {1} {2}", package.Id, feed.Name, feed.Url);
+            //                     Log.DebugFormat("Could not add update for {0} from {1} {2}", game.Package.Id, feed.Name, feed.Url);
             //                 }                                
             //             }
             //         }
@@ -323,7 +325,7 @@ namespace Octgn.Core
             MyHelper.NotImplemented();
         }
 
-        public async Task<IEnumerable<IPackageSearchMetadata>> GetPackagesAsync(NamedUrl url)
+        public async Task<IEnumerable<GameInfo>> GetPackagesAsync(NamedUrl url)
         {
             try
             {
@@ -335,11 +337,8 @@ namespace Octgn.Core
 
                 Log.InfoFormat("Getting packages for feed {0}:{1}", url.Name, url.Url);
 
-                // Utwórz źródło pakietów z URL
-                var packageSource = new PackageSource(url.Url);
-                var repository = Repository.Factory.GetCoreV3(packageSource);
+                var repository = GetNugetRepository(url);
 
-                // Uzyskaj dostawcę wyszukiwania pakietów
                 var searchResource = await repository.GetResourceAsync<PackageSearchResource>();
 
                 var searchFilter = new SearchFilter(includePrerelease: false);
@@ -347,7 +346,7 @@ namespace Octgn.Core
 
                 
                 Log.InfoFormat("Finished getting packages for feed {0}:{1}", url.Name, url.Url);
-                return searchMetadata;
+                return searchMetadata.Select(x=>new GameInfo(x,url));
             }
             finally
             {
@@ -355,50 +354,115 @@ namespace Octgn.Core
             }
         }
 
-        public void ExtractPackage( string directory, IPackage package, Action<int, int> onProgressUpdate = null ) {
-            // try {
-            //     if( onProgressUpdate == null ) onProgressUpdate = ( i, i1 ) => { };
-            //     Log.InfoFormat( "Extracting package {0} {1}", package.Id, directory );
-            //     onProgressUpdate( -1, 1 );
-            //     var files = package.GetFiles().ToArray();
-            //     var curFileNum = 0;
-            //     onProgressUpdate( curFileNum, files.Length );
-            //     foreach( var file in files ) {
-            //         try {
-            //             Log.DebugFormat( "Got file {0} {1} {2}", file.Path, package.Id, directory );
-            //             var p = Path.Combine( directory, file.Path );
-            //             var fi = new FileInfo( p );
-            //             var dir = fi.Directory.FullName;
-            //             Log.DebugFormat( "Creating directory {0} {1} {2}", dir, package.Id, directory );
-            //             Directory.CreateDirectory( dir );
-            //             var byteList = new List<byte>();
-            //             Log.DebugFormat( "Reading file {0} {1}", package.Id, directory );
-            //             using( var sr = new BinaryReader( file.GetStream() ) ) {
-            //                 var buffer = new byte[1024];
-            //                 var len = sr.Read( buffer, 0, 1024 );
-            //                 while( len > 0 ) {
-            //                     byteList.AddRange( buffer.Take( len ) );
-            //                     Array.Clear( buffer, 0, buffer.Length );
-            //                     len = sr.Read( buffer, 0, 1024 );
-            //                 }
-            //                 Log.DebugFormat( "Writing file {0} {1}", package.Id, directory );
-            //                 File.WriteAllBytes( p, byteList.ToArray() );
-            //                 Log.DebugFormat( "Wrote file {0} {1}", package.Id, directory );
-            //             }
-            //             curFileNum++;
-            //             onProgressUpdate( curFileNum, files.Length );
-            //
-            //         } catch( Exception e ) {
-            //             Log.ErrorFormat( "ExtractPackage Error {0} {1} {2}\n{3}", file.Path, package.Id, directory, e.ToString() );
-            //             throw;
-            //         }
-            //     }
-            //     Log.DebugFormat( "No Errors {0} {1}", package.Id, directory );
-            // } finally {
-            //     onProgressUpdate( -1, 1 );
-            //     Log.InfoFormat( "Finished {0} {1}", package.Id, directory );
-            // }
-            MyHelper.NotImplemented();
+        private static SourceRepository GetNugetRepository(NamedUrl url)
+        {
+            var packageSource = new PackageSource(url.Url);
+            if (url.HasCredentials)
+            {
+                packageSource.Credentials = new PackageSourceCredential(url.Url, url.Username, url.Password, true, null);    
+            }
+                
+            var repository = Repository.Factory.GetCoreV3(packageSource);
+            return repository;
+        }
+
+
+        public async Task ExtractPackage(string directory, GameInfo game,
+            Action<int, int> onProgressUpdate = null) {
+            try {
+                if( onProgressUpdate == null ) onProgressUpdate = ( i, i1 ) => { };
+                Log.InfoFormat( "Extracting package {0} {1}", game.Package.Identity.Id, directory );
+                onProgressUpdate( -1, 1 );
+                var curFileNum = 0;
+                var repository = GetNugetRepository(game.FeedUrl);
+                var downloadResource = await repository.GetResourceAsync<DownloadResource>();
+
+                var downloadResult = await downloadResource.GetDownloadResourceResultAsync(game.Package.Identity, new PackageDownloadContext(new SourceCacheContext()), Path.GetTempPath(), new NullLogger(), CancellationToken.None);
+
+                if (downloadResult.Status == DownloadResourceResultStatus.Available)
+                {
+                    // Otwórz pakiet jako folder
+                    using (var packageReader = new PackageArchiveReader(downloadResult.PackageStream))
+                    {
+                        
+                        var files = packageReader.GetFiles();
+
+                        foreach (var file in files)
+                        {
+                            try {
+                                
+                                Log.DebugFormat( "Got file {0} {1} {2}", file, game.Package.Identity.Id, directory );
+                                var p = Path.Combine( directory, file );
+                                var fi = new FileInfo( p );
+                                var dir = fi.Directory!.FullName;
+                                Log.DebugFormat( "Creating directory {0} {1} {2}", dir, game.Package.Identity.Id, directory );
+                                Directory.CreateDirectory( dir );
+                                //var byteList = new List<byte>();
+                                Log.DebugFormat( "Reading file {0} {1}", game.Package.Identity.Id, directory );
+
+                                packageReader.ExtractFile(file, p, new NullLogger());
+                                // using( var sr = new BinaryReader( packageReader.GetStream(file) ) ) {
+                                //     var buffer = new byte[1024];
+                                //     var len = sr.Read( buffer, 0, 1024 );
+                                //     while( len > 0 ) {
+                                //         byteList.AddRange( buffer.Take( len ) );
+                                //         Array.Clear( buffer, 0, buffer.Length );
+                                //         len = sr.Read( buffer, 0, 1024 );
+                                //     }
+                                //     Log.DebugFormat( "Writing file {0} {1}", game.Package.Identity.Id, directory );
+                                //     await File.WriteAllBytesAsync( p, byteList.ToArray() );
+                                //     Log.DebugFormat( "Wrote file {0} {1}", game.Package.Identity.Id, directory );
+                                // }
+                                curFileNum++;
+                                onProgressUpdate( curFileNum, files.Count() );
+                            
+                            } catch( Exception e ) {
+                                Log.ErrorFormat( "ExtractPackage Error {0} {1} {2}\n{3}", file, game.Package.Identity.Id, directory, e.ToString() );
+                                throw;
+                            }
+                        }
+                    }
+                }
+                
+                // var files = game.Package.GetFiles().ToArray();
+                // var curFileNum = 0;
+                // onProgressUpdate( curFileNum, files.Length );
+                // foreach( var file in files ) {
+                //     try {
+                //         Log.DebugFormat( "Got file {0} {1} {2}", file.Path, game.Package.Identity.Id, directory );
+                //         var p = Path.Combine( directory, file.Path );
+                //         var fi = new FileInfo( p );
+                //         var dir = fi.Directory.FullName;
+                //         Log.DebugFormat( "Creating directory {0} {1} {2}", dir, game.Package.Identity.Id, directory );
+                //         Directory.CreateDirectory( dir );
+                //         var byteList = new List<byte>();
+                //         Log.DebugFormat( "Reading file {0} {1}", game.Package.Identity.Id, directory );
+                //         using( var sr = new BinaryReader( file.GetStream() ) ) {
+                //             var buffer = new byte[1024];
+                //             var len = sr.Read( buffer, 0, 1024 );
+                //             while( len > 0 ) {
+                //                 byteList.AddRange( buffer.Take( len ) );
+                //                 Array.Clear( buffer, 0, buffer.Length );
+                //                 len = sr.Read( buffer, 0, 1024 );
+                //             }
+                //             Log.DebugFormat( "Writing file {0} {1}", game.Package.Identity.Id, directory );
+                //             File.WriteAllBytes( p, byteList.ToArray() );
+                //             Log.DebugFormat( "Wrote file {0} {1}", game.Package.Identity.Id, directory );
+                //         }
+                //         curFileNum++;
+                //         onProgressUpdate( curFileNum, files.Length );
+                //
+                //     } catch( Exception e ) {
+                //         Log.ErrorFormat( "ExtractPackage Error {0} {1} {2}\n{3}", file.Path, game.Package.Identity.Id, directory, e.ToString() );
+                //         throw;
+                //     }
+                // }
+                
+                Log.DebugFormat( "No Errors {0} {1}", game.Package.Identity.Id, directory );
+            } finally {
+                onProgressUpdate( -1, 1 );
+                Log.InfoFormat( "Finished {0} {1}", game.Package.Identity.Id, directory );
+            }
         }
 
         /// <summary>

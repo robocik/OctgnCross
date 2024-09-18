@@ -14,6 +14,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
+using DialogHostAvalonia;
 using log4net;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
@@ -28,6 +29,7 @@ using Octgn.Library.Exceptions;
 using Octgn.Library.Networking;
 using Octgn.Utils;
 using OctgnCross.Controls;
+using OctgnCross.Core;
 
 namespace OctgnCross.Tabs.GameManagement;
 
@@ -121,7 +123,7 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 	internal async Task UpdatePackageList() {
 		Dispatcher.UIThread.Invoke( new Action( () => { this.ButtonsEnabled = false; } ) );
 		try {
-			IEnumerable<IPackageSearchMetadata> packs;
+			IEnumerable<GameInfo> packs;
 			if(Selected.Url == null) {
 				// This means read all game feeds
 				packs = (await Task.WhenAll(
@@ -137,10 +139,10 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 				packs = await GameFeedManager.Get().GetPackagesAsync(Selected);
 			}
 			List<FeedGameViewModel> games = packs//.Where( x => x.IsAbsoluteLatestVersion )
-				.OrderBy( x => x.Title )
-				.GroupBy( x => x.Identity.Id )
-				.Select( x => x.OrderByDescending( y => y.Identity.Version ).First() )
-				.Select( x => new FeedGameViewModel( x ) )
+				.OrderBy( x => x.Package.Title )
+				.GroupBy( x => x.Package.Identity.Id )
+				.Select( x => x.OrderByDescending( y => y.Package.Identity.Version ).First() )
+				.Select( x => new FeedGameViewModel( x) )
 				.ToList();
 			Dispatcher.UIThread.Invoke( new Action( () => {
 				foreach(FeedGameViewModel package in Packages.ToList()) {
@@ -222,10 +224,12 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 		} ) );
 	}
 
-	private void ButtonAddClick( object sender, RoutedEventArgs e ) {
+	private async void ButtonAddClick( object sender, RoutedEventArgs e ) {
 		ButtonsEnabled = false;
 		var dialog = new AddFeed();
-		// dialog.Show( DialogPlaceHolder );
+		await dialog.ShowDialog((Window)this.VisualRoot );
+		ButtonsEnabled = true;
+		// await DialogHost.Show(dialog.Content, "MainDialogHost");
 		// dialog.OnClose += ( o, result ) => {
 		// 	ButtonsEnabled = true;
 		// 	dialog.Dispose();
@@ -295,17 +299,16 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 		{
 			var filesToImport = (from f in files
 				select new ImportFile { File = f, Status = ImportFileStatus.Unprocessed }).ToList();
-			await this.ProcessTask(
-				() => {
+			await this.ProcessTask(async () => {
 
 					foreach(var f in filesToImport) {
 						try {
-							if(!File.Exists( f.Filename )) {
-								f.Status = ImportFileStatus.FileNotFound;
-								f.Message = "File not found.";
-								continue;
-							}
-							GameManager.Get().Installo8c( f.Filename );
+							// if(!File.Exists( f.Filename )) {
+							// 	f.Status = ImportFileStatus.FileNotFound;
+							// 	f.Message = "File not found.";
+							// 	continue;
+							// }
+							await GameManager.Get().Installo8c( f.File );
 							f.Status = ImportFileStatus.Imported;
 							f.Message = "Installed Successfully";
 						} catch(UserMessageException ex) {
@@ -320,7 +323,6 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 							f.Status = ImportFileStatus.Error;
 						}
 					}
-					return Task.CompletedTask;
 				}, async () => {
 					this.installo8cprocessing = false;
 
@@ -402,8 +404,7 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 			} else {
 				await this.ProcessTask(async () => {
 					try {
-						// GameManager.Get().InstallGame( model.Package );
-						MyHelper.NotImplemented();
+						await GameManager.Get().InstallGame( model.Game);
 					} catch(UnauthorizedAccessException) {
 						var box = MessageBoxManager
 							.GetMessageBoxStandard("Error","Could not install the game. Please try exiting all running instances of OCTGN and try again.\nYou can also try switching feeds, and then switching back and try again.",

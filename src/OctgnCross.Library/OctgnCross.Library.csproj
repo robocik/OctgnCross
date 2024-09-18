@@ -19,4 +19,15 @@
       <ProjectReference Include="..\Online\OctgnCross.Online\OctgnCross.Online.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="Schemas\CardGenerator.xsd" />
+      <EmbeddedResource Include="Schemas\CardGenerator.xsd" />
+      <None Remove="Schemas\CardSet.xsd" />
+      <EmbeddedResource Include="Schemas\CardSet.xsd" />
+      <None Remove="Schemas\Game.xsd" />
+      <EmbeddedResource Include="Schemas\Game.xsd" />
+      <None Remove="Schemas\GameEvents.xsd" />
+      <EmbeddedResource Include="Schemas\GameEvents.xsd" />
+    </ItemGroup>
+
 </Project>

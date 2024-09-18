@@ -4,36 +4,35 @@ using NuGet.Protocol.Core.Types;
 using Octgn.Core;
 using Octgn.Core.Annotations;
 using Octgn.Core.DataManagers;
+using Octgn.Library.Networking;
+using OctgnCross.Core;
 
 namespace OctgnCross.Tabs.GameManagement;
 
 public class FeedGameViewModel : INotifyPropertyChanged,IEquatable<FeedGameViewModel>,IDisposable
 {
-    private IPackageSearchMetadata package;
+    private readonly GameInfo _game;
     private Guid id;
-    
-    
+
+    public GameInfo Game => _game;
     public IPackageSearchMetadata Package
     {
         get
         {
-            return this.package;
+            return this._game.Package;
         }
-        set
-        {
-            //if (Equals(value, this.package))
-            //{
-            //    return;
-            //}
-            this.package = value;
-            if (!Guid.TryParse(package.Identity.Id, out this.id)) this.id = Guid.Empty;
-            this.OnPropertyChanged("Package");
-            this.OnPropertyChanged("Installed");
-            this.OnPropertyChanged("ImageUri");
-            this.OnPropertyChanged("Id");
-            this.OnPropertyChanged("InstallButtonText");
-        }
+        // set
+        // {
+        //     this.package = value;
+        //     if (!Guid.TryParse(package.Identity.Id, out this.id)) this.id = Guid.Empty;
+        //     this.OnPropertyChanged("Package");
+        //     this.OnPropertyChanged("Installed");
+        //     this.OnPropertyChanged("ImageUri");
+        //     this.OnPropertyChanged("Id");
+        //     this.OnPropertyChanged("InstallButtonText");
+        // }
     }
+
     public Guid Id => id;
 
     public bool Installed
@@ -75,9 +74,10 @@ public class FeedGameViewModel : INotifyPropertyChanged,IEquatable<FeedGameViewM
             return Package.Authors == null ? "" : String.Join(" ", Package.Authors);
         }
     }
-    public FeedGameViewModel(IPackageSearchMetadata package)
+    public FeedGameViewModel(GameInfo game)
     {
-        Package = package;
+        _game = game;
+        Guid.TryParse(game.Package.Identity.Id, out id);
         GameManager.Get().GameListChanged += OnGameListChanged;
     }
 

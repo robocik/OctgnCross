@@ -94,4 +94,10 @@ public partial class MainView : UserControl,INotifyPropertyChanged
         // GameUpdater.Get().Dispose();
         Task.Factory.StartNew(App.Exit);
     }
+
+    private void TabControlMain_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        TabCustomGamesList?.VisibleChanged(TabCustomGames.IsSelected);
+        // TabHistory.VisibleChanged(TabItemHistory.IsSelected);
+    }
 }

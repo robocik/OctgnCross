@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Online\OctgnCross.Online\OctgnCross.Online.csproj" />
+      <ProjectReference Include="..\Online\Octgn.Online\Octgn.Online.csproj" />
     </ItemGroup>
 
     <ItemGroup>

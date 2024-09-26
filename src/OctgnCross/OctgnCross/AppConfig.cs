@@ -1,48 +1,56 @@
-using System.Configuration;
+using System;
+using System.IO;
 using System.Reflection;
 using log4net;
+using Microsoft.Extensions.Configuration;
+using ConfigurationManager = System.Configuration.ConfigurationManager;
 
 namespace Octgn;
 
 public static class AppConfig
 {
     internal static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-    public static readonly string WebsitePath;
-    public static readonly string ChatServerHost;
-    public static readonly string GameServerPath;
-    public static readonly string UpdateInfoPath;
-    public static readonly string GameFeed;
-    public static readonly int GameFeedTimeoutSeconds;
-    public static readonly bool UseGamePackageManagement;
-    public static readonly string StaticWebsitePath;
+    public static  string WebsitePath{ get; private set; }
+    public static  string ChatServerHost{ get; private set; }
+    public static  string GameServerPath{ get; private set; }
+    public static  string UpdateInfoPath{ get; private set; }
+    public static  string GameFeed{ get; private set; }
+    public static  int GameFeedTimeoutSeconds{ get; private set; }
+    public static  bool UseGamePackageManagement{ get; private set; }
+    public static  string StaticWebsitePath{ get; private set; }
 
-    static AppConfig()
+    public static IConfiguration Configuration { get; private set; }
+    public static void Load(Stream stream)
     {
         Log.Info("Setting AppConfig");
+        var builder = new ConfigurationBuilder()
+            .AddJsonStream(stream);
+
+        Configuration = builder.Build();
         if (App.IsReleaseTest == false
             && Library.X.Instance.Debug == false)
         {
-            WebsitePath = ConfigurationManager.AppSettings["WebsitePath"];
+            WebsitePath = Configuration["AppSettings:WebsitePath"];
         }
         else
         {
-            WebsitePath = ConfigurationManager.AppSettings["WebsitePathTest"];
+            WebsitePath = Configuration["AppSettings:WebsitePathTest"];
         }
-        StaticWebsitePath = ConfigurationManager.AppSettings[nameof(StaticWebsitePath)];
-        ChatServerHost = ConfigurationManager.AppSettings["ChatServerHost"];
-        GameServerPath = ConfigurationManager.AppSettings["GameServerPath"];
-        GameFeed = ConfigurationManager.AppSettings["GameFeed"];
+        StaticWebsitePath = Configuration["AppSettings:"+nameof(StaticWebsitePath)];
+        ChatServerHost = Configuration["AppSettings:ChatServerHost"];
+        GameServerPath = Configuration["AppSettings:GameServerPath"];
+        GameFeed = Configuration["AppSettings:GameFeed"];
         GameFeedTimeoutSeconds = 60;
-        if (int.TryParse(ConfigurationManager.AppSettings["GameFeedTimeoutSeconds"], out var parsedSeconds))
+        if (int.TryParse(Configuration["AppSettings:GameFeedTimeoutSeconds"], out var parsedSeconds))
         {
             GameFeedTimeoutSeconds = parsedSeconds;
         }
 
-        UseGamePackageManagement = bool.Parse(ConfigurationManager.AppSettings["UseGamePackageManagement"]);
+        UseGamePackageManagement = bool.Parse(Configuration["AppSettings:UseGamePackageManagement"]);
         if (App.IsReleaseTest)
-            UpdateInfoPath = ConfigurationManager.AppSettings["UpdateCheckPathTest"];
+            UpdateInfoPath = Configuration["AppSettings:UpdateCheckPathTest"];
         else
-            UpdateInfoPath = ConfigurationManager.AppSettings["UpdateCheckPath"];
+            UpdateInfoPath = Configuration["AppSettings:UpdateCheckPath"];
 
         Log.Info("Set AppConfig");
     }

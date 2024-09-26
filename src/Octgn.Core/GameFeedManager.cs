@@ -381,7 +381,6 @@ namespace Octgn.Core
 
                 if (downloadResult.Status == DownloadResourceResultStatus.Available)
                 {
-                    // Otwórz pakiet jako folder
                     using (var packageReader = new PackageArchiveReader(downloadResult.PackageStream))
                     {
                         

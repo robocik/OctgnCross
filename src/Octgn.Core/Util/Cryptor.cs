@@ -20,6 +20,7 @@ namespace Octgn.Core.Util
             var keyBytes = Encoding.UTF8.GetBytes(key);
             try
             {
+                
                 byte[] encryptedData = ProtectedData.Protect(textBytes, keyBytes, DataProtectionScope.CurrentUser);
                 return Convert.ToBase64String(encryptedData);
             }

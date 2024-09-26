@@ -7,6 +7,7 @@
              xmlns:converters="clr-namespace:Octgn.Utils.Converters"
              xmlns:gameManagement="clr-namespace:OctgnCross.Tabs.GameManagement"
              xmlns:dialogHostAvalonia="clr-namespace:DialogHostAvalonia;assembly=DialogHost.Avalonia"
+             xmlns:play="clr-namespace:OctgnCross.Tabs.Play"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Octgn.Views.MainView"  x:Name="me"
              x:DataType="vm:MainViewModel">
@@ -28,8 +29,8 @@
     <!--     </TabItem> -->
     <!-- </TabControl> -->
     <dialogHostAvalonia:DialogHost Identifier="MainDialogHost"
-                                   DialogMargin="16"
-                                   dialogHostAvalonia:DialogHostStyle.CornerRadius="8">
+                                   DialogMargin="0"
+                                   dialogHostAvalonia:DialogHostStyle.CornerRadius="0">
         <Grid x:Name="GridMain">
     <Grid.ColumnDefinitions>
         <ColumnDefinition Width="100*" MinWidth="560"/>
@@ -73,12 +74,12 @@
 		<!-- <Controls:UpdateBar/> -->
 	</StackPanel>
     <GridSplitter IsVisible="false" Width="5" Grid.Row="1" Grid.Column="1" ResizeBehavior="CurrentAndNext" Background="Black" Margin="0,25,0,0"/>
-    <TabControl x:Name="TabControlMain" Grid.Row="2" >
+    <TabControl x:Name="TabControlMain" Grid.Row="2" SelectionChanged="TabControlMain_OnSelectionChanged" >
         <TabItem x:Name="TabMain" Header="OCTGN" Background="Transparent" >
             <login:LoginTab></login:LoginTab>
         </TabItem>
         <TabItem x:Name="TabCustomGames" Header="Game Lobby" >
-            <!-- <playtab:PlayTab x:Name="TabCustomGamesList"></playtab:PlayTab> -->
+            <play:PlayTab x:Name="TabCustomGamesList"></play:PlayTab>
         </TabItem>
         <TabItem x:Name="TabItemHistory" Header="Game History" >
             <!-- <historytab:GameHistoryTab x:Name="TabHistory"/> -->

@@ -18,17 +18,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Communication.Te
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Online", "Online", "{63545B58-4E4C-4A8B-8E54-9B042322489E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Online", "Online\OctgnCross.Online\OctgnCross.Online.csproj", "{518753BC-14BD-445B-93C1-04B4C4F164AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Online", "Online\Octgn.Online\Octgn.Online.csproj", "{518753BC-14BD-445B-93C1-04B4C4F164AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Library", "OctgnCross.Library\OctgnCross.Library.csproj", "{7422505A-C6EB-4EBC-9CC3-A443A7E30B5D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Library", "Octgn.Library\Octgn.Library.csproj", "{7422505A-C6EB-4EBC-9CC3-A443A7E30B5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.ProxyGenerator", "OctgnCross.ProxyGenerator\OctgnCross.ProxyGenerator.csproj", "{91B420E0-0307-4668-B7F4-EFED9CF883C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.DataNew", "OctgnCross.DataNew\OctgnCross.DataNew.csproj", "{91F144EB-F5F5-4C1C-9499-86A8B8BC3290}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Server", "OctgnCross.Server\OctgnCross.Server.csproj", "{DDB5EB65-7CE0-4468-9E37-1BE4E35D2CB4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Server", "Octgn.Server\Octgn.Server.csproj", "{DDB5EB65-7CE0-4468-9E37-1BE4E35D2CB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Core", "OctgnCross.Core\OctgnCross.Core.csproj", "{4752504C-1604-4158-AB79-F7FD89854178}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Core", "Octgn.Core\Octgn.Core.csproj", "{4752504C-1604-4158-AB79-F7FD89854178}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.WindowsDesktopUtilities", "OctgnCross.WindowsDesktopUtilities\OctgnCross.WindowsDesktopUtilities.csproj", "{FB34FB2C-DBA9-44C5-98A2-9EF02DB09735}"
 EndProject

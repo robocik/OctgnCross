@@ -1,29 +1,23 @@
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using DialogHostAvalonia;
 using Octgn.Core;
 using OctgnCross.Controls;
 
 namespace OctgnCross.Tabs.GameManagement;
 
-public partial class AddFeed:Window,INotifyPropertyChanged
+public partial class AddFeed:UserControlBase
 {
     private string _error;
     private string _feedName;
     private string _feedUrl;
     private string _feedUsername;
     private string _feedPassword;
-    public event PropertyChangedEventHandler PropertyChanged;
     
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-    
+    public DialogSession DialogSession { get; set; }
     public bool HasErrors { get; private set; }
     public string Error
     {
@@ -59,7 +53,7 @@ public partial class AddFeed:Window,INotifyPropertyChanged
         private set { _feedPassword=value; }
     }
 
-    private Decorator Placeholder;
+    // private Decorator Placeholder;
 
     public AddFeed()
     {
@@ -115,9 +109,9 @@ public partial class AddFeed:Window,INotifyPropertyChanged
     #endregion
 
     #region UI Events
-    private void ButtonCancelClick(object sender, RoutedEventArgs e)
+    private void ButtonCancelClick(object _, RoutedEventArgs e)
     {
-        this.Close(DialogResult.Cancel);
+        DialogSession.Close(DialogResult.Cancel);
     }
 
     private void ButtonAddClick(object sender, RoutedEventArgs e)
@@ -154,7 +148,7 @@ public partial class AddFeed:Window,INotifyPropertyChanged
                             this.SetError(error);
                         this.EndWait();
                         if (string.IsNullOrWhiteSpace(error))
-                            this.Close(DialogResult.OK);
+                            DialogSession.Close(DialogResult.OK);
                     }));
             });
         task.Start();

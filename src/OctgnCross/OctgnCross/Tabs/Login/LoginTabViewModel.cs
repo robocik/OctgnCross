@@ -88,7 +88,8 @@ public class LoginTabViewModel : ViewModelBase
 
     public LoginTabViewModel()
     {
-        Password = Prefs.Password != null ? Prefs.Password.Decrypt() : null;
+        // Password = Prefs.Password != null ? Prefs.Password.Decrypt() : null;
+        Password = Prefs.Password != null ? Prefs.Password/*.Decrypt()*/ : null;//TODO
         Username = Prefs.Username;
     }
 
@@ -121,7 +122,7 @@ public class LoginTabViewModel : ViewModelBase
 
             Prefs.Username = webLoginResult.username;
             Prefs.Nickname = webLoginResult.username;
-            Prefs.Password = Password.Encrypt();
+            Prefs.Password = Password;//.Encrypt();
             Prefs.SessionKey = webLoginResult.sessionKey;
 
             await App.LobbyClient.Connect(default); //TODO: Cancellation for login timeouts, but only if it's not already built into the com library

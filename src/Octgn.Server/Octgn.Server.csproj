@@ -9,8 +9,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\OctgnCross.DataNew\OctgnCross.DataNew.csproj" />
-      <ProjectReference Include="..\OctgnCross.Library\OctgnCross.Library.csproj" />
-      <ProjectReference Include="..\Online\OctgnCross.Online\OctgnCross.Online.csproj" />
+      <ProjectReference Include="..\Octgn.Library\Octgn.Library.csproj" />
+      <ProjectReference Include="..\Online\Octgn.Online\Octgn.Online.csproj" />
     </ItemGroup>
 
     <ItemGroup>

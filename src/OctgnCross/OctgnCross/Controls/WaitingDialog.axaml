@@ -1,10 +1,11 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OctgnCross.Controls.WaitingDialog" 
-             x:Name="Me" DataContext="{Binding RelativeSource={RelativeSource Self}}">
+<controls:UserControlBase xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:controls="clr-namespace:OctgnCross.Controls"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="OctgnCross.Controls.WaitingDialog" 
+                 x:Name="Me" DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Border x:Name="BorderHostGame" Width="300" MinHeight="100" IsVisible="true" Padding="10,10,10,10" >
         <Border.Background>
             <LinearGradientBrush EndPoint="0,0" StartPoint="1,0">
@@ -34,4 +35,4 @@
             <ProgressBar Grid.Row="3" Grid.ColumnSpan="2" x:Name="ProgressBar" Height="20" VerticalAlignment="Bottom" Margin="0,5,0,5" IsIndeterminate="True"></ProgressBar>
         </Grid>
     </Border>
-</UserControl>
+</controls:UserControlBase>

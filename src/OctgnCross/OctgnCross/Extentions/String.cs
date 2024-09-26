@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Maui.Storage;
 using Octgn.Core;
 using Octgn.Core.Util;
 using Org.BouncyCastle.Crypto.Digests;
@@ -43,7 +44,7 @@ namespace Octgn.Extentions
             hash.BlockUpdate(input, 0, input.Length);
             byte[] hasher = new byte[hash.GetDigestSize()];
             hash.DoFinal(hasher, 0);
-
+            
             return Cryptor.Encrypt(text, BitConverter.ToString(hasher));
         }
 

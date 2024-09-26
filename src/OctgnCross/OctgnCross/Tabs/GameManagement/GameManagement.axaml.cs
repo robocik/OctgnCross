@@ -33,7 +33,7 @@ using OctgnCross.Core;
 
 namespace OctgnCross.Tabs.GameManagement;
 
-public partial class GameManagement : UserControl,INotifyPropertyChanged
+public partial class GameManagement : UserControlBase
 {
     private static ILog Log = LogManager.GetLogger( MethodBase.GetCurrentMethod().DeclaringType );
 
@@ -208,7 +208,7 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 		OnPropertyChanged( nameof( Selected ) );
 		OnPropertyChanged( nameof( Packages ) );
 		OnPropertyChanged( nameof( NoGamesInstalled ) );
-		this.OnPropertyChanged( nameof( IsGameSelected ) );
+		OnPropertyChanged( nameof( IsGameSelected ) );
 	}
 
 	private void OnOnUpdateFeedList( object sender, EventArgs eventArgs ) {
@@ -227,17 +227,16 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 	private async void ButtonAddClick( object sender, RoutedEventArgs e ) {
 		ButtonsEnabled = false;
 		var dialog = new AddFeed();
-		await dialog.ShowDialog((Window)this.VisualRoot );
+		await DialogHost.Show(dialog,delegate(object _, DialogOpenedEventArgs args)
+		{
+			dialog.DialogSession = args.Session;
+		});
 		ButtonsEnabled = true;
-		// await DialogHost.Show(dialog.Content, "MainDialogHost");
-		// dialog.OnClose += ( o, result ) => {
-		// 	ButtonsEnabled = true;
-		// 	dialog.Dispose();
-		// };
 	}
 
 	private void ButtonRemoveClick( object sender, RoutedEventArgs e ) {
-		if(Selected == null) return;
+		if(Selected == null) 
+			return;
 		GameFeedManager.Get().RemoveFeed( Selected.Name );
 	}
 
@@ -352,16 +351,40 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 		}
 	}
 
-	private async Task<WaitingDialog> ProcessTask( Func<Task> action, Func<Task> completeAction, string title, string message ) {
+	private async Task ProcessTask( Func<Task> action, Func<Task> completeAction, string title, string message ) {
 		ButtonsEnabled = false;
-		var dialog = new WaitingDialog();
-		dialog.OnClose += async ( o, result ) => {
-			ButtonsEnabled = true;
+		// var dialog = new WaitingDialog();
+		// dialog.OnClose += async ( o, result ) => {
+		// 	ButtonsEnabled = true;
+		// 	await completeAction();
+		// 	dialog.Dispose();
+		// };
+		// await dialog.Show( DialogPlaceHolder, action, title, message );
+		// return dialog;
+
+		try
+		{
+			await Progress.RunAsync(VisualRoot as Window, async () =>
+			{
+				await action();
+				return null;
+			},()=>
+			{
+				ButtonsEnabled = true;
+				return Task.FromResult<object>(null);
+			},title,message);
+		}
+		catch (Exception ex)
+		{
+			Log.Error("Error",ex);
+		}
+		finally
+		{
 			await completeAction();
-			dialog.Dispose();
-		};
-		await dialog.Show( DialogPlaceHolder, action, title, message );
-		return dialog;
+			ButtonsEnabled = true;
+		}
+		
+		
 	}
 
 	private bool installuninstallprocessing = false;
@@ -479,12 +502,4 @@ public partial class GameManagement : UserControl,INotifyPropertyChanged
 
 	#endregion Events
 
-	#region PropertyChanged
-	public event PropertyChangedEventHandler PropertyChanged;
-
-	[NotifyPropertyChangedInvocator]
-	protected virtual void OnPropertyChanged( string propertyName ) {
-	    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
-	#endregion PropertyChanged
 }

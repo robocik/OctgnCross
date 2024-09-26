@@ -71,8 +71,16 @@ namespace Octgn.Communication.Packets
 
             if (isNull) return;
 
+            //TODO: For now we skip checking version of the OCTGN.Communication assemlby
             // We do this even if we don't have data just to verify everything is ok
-            var dataType = Type.GetType(DataType, true);
+            var dataType = Type.GetType(DataType, name =>
+            {
+                var assemblyName = new AssemblyName(name.Name);
+                assemblyName.Version = null; // Ignoruj wersję
+
+                // Załaduj lokalne assembly (możesz tutaj wskazać ścieżkę lub użyć Assembly.Load)
+                return Assembly.Load(assemblyName);
+            }, null,true);
 
             if (hasData) {
                 Data = serializer.Deserialize(dataType, data);

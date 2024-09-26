@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:OctgnCross.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OctgnCross.Controls.GameSelector">
+    <Border BorderBrush="Yellow" Background="White"> 
+        <!-- <Carousel Name="slides" > -->
+        <!--     <Carousel.PageTransition > -->
+        <!--         <CompositePageTransition> -->
+        <!--             <PageSlide Duration="0:00:01.500" Orientation="Horizontal" /> -->
+        <!--         </CompositePageTransition> -->
+        <!--     </Carousel.PageTransition> -->
+        <!--     <Carousel.Template> -->
+        <!--          -->
+        <!--     </Carousel.Template> -->
+        <!-- </Carousel> -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Background="LightGray" Click="PreviousClick" Content="&lt;" />
+            <Carousel Grid.Column="1" Name="slides" HorizontalAlignment="Center" VerticalAlignment="Center" SelectionChanged="Slides_OnSelectionChanged">
+                <Carousel.PageTransition >
+                    <CompositePageTransition>
+                      <PageSlide Duration="0:00:01.500" Orientation="Horizontal" />
+                    </CompositePageTransition>
+                </Carousel.PageTransition>
+                <Carousel.ItemTemplate>
+                    <DataTemplate DataType="controls:GameViewModel">
+                        <Image Source="{Binding BackImage }" Width="400" Height="300" Stretch="Uniform" />
+                    </DataTemplate>
+                </Carousel.ItemTemplate>
+            </Carousel>
+            <Button Grid.Column="2"  Background="LightGray" Content="&gt;" Click="NextClick"/>
+        </Grid>
+        
+    </Border>
+</UserControl>

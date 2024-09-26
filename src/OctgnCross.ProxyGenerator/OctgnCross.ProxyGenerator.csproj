@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\OctgnCross.Library\OctgnCross.Library.csproj" />
+      <ProjectReference Include="..\Octgn.Library\Octgn.Library.csproj" />
     </ItemGroup>
 
 </Project>

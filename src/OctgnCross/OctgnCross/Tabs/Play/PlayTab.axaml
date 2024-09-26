@@ -1,0 +1,189 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:OctgnCross.Tabs.Play" x:DataType="local:HostedGameViewModel"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OctgnCross.Tabs.Play.PlayTab" x:Name="Me" >
+
+    <UserControl.Resources>
+        <Animation x:Key="NormalRefreshDelayAnimation" x:SetterTargetType="ProgressBar" Duration="{x:Static local:PlayTab.NormalRefreshDelay}"> 
+            <KeyFrame Cue="0%">
+                <Setter Property="Value" Value="200"/>
+            </KeyFrame>
+            <KeyFrame Cue="100%">
+                <Setter Property="Value" Value="0"/>
+            </KeyFrame>
+        </Animation>
+        <Animation x:Key="InitialRefreshDelayAnimation" x:SetterTargetType="ProgressBar" Duration="{x:Static local:PlayTab.InitialRefreshDelay}">
+            <KeyFrame Cue="0%">
+                <Setter Property="Value" Value="200"/>
+            </KeyFrame>
+            <KeyFrame Cue="100%">
+                <Setter Property="Value" Value="0"/>
+            </KeyFrame>
+        </Animation>
+    <DataTemplate x:Key="IconTemplate" DataType="local:HostedGameViewModel">
+            <Image Source="/Resources/lock.png"
+                       Stretch="UniformToFill"
+                       Height="16"
+                       IsVisible="{Binding HasPassword}"/>
+        </DataTemplate>
+    <DataTemplate x:Key="UserIconTemplate" DataType="local:HostedGameViewModel">
+        <Image Source="{Binding UserImage}"
+                       Stretch="UniformToFill"
+                       Height="16" Width="16" Margin="0"/>
+    </DataTemplate>
+</UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition MinHeight="100" Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition MinHeight="100" Height="2*" />
+        </Grid.RowDefinitions>
+        <Border x:Name="DialogPlaceHolder" Grid.RowSpan="8" Margin="0 -34 0 0"></Border>
+        <Border x:Name="BorderButtons"  IsEnabled="{Binding LoadingGame, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PlayTab}}}" Grid.Row="0">
+            <DockPanel>
+                <Border DockPanel.Dock="Right" Height="35">
+                    <Border Padding="5,0,5,0" CornerRadius="5" Background="#dd333333" IsVisible="true">
+                        <Grid Margin="10 1 10 5">
+                            <Label HorizontalAlignment="Center" FontSize="8"
+                                   Content="{Binding GameCount, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PlayTab}}}" />
+                            <Label Content="Games" FontSize="12" FontWeight="Bold" Margin="0 15 0 0"/>
+                        </Grid>
+                    </Border>
+                </Border>
+                <WrapPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <!--<Button Click="ButtonRefreshClick" Width="35" Height="30" Margin="0,0,5,0" FontSize="35" Padding="0 -6 0 0"
+                        Style="{StaticResource FlatDarkOrangeButtonStyle}" x:Name="ButtonRefresh"
+                        FontFamily="{StaticResource Entypo}" ToolTip="Refresh Game List">&#10227;</Button>-->
+                    <Button Click="ButtonHostClick" Content="Host Game" MinWidth="80" Height="34" Margin="0,0,5,0" ></Button>
+                    <Button Click="ButtonJoinClick" Content="Join Game" MinWidth="80" Height="34" Margin="0,0,5,0" 
+                        IsEnabled="{Binding IsJoinableGameSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PlayTab}}}"/>
+                    <Button Click="ButtonJoinOfflineGame" Content="Connect To A Game" MinWidth="80" Padding="5,0"
+                        Height="34" Margin="0,0,5,0" />
+                    <Button Click="ButtonKillGame" Content="Kill Game" MinWidth="80" Padding="5,0"
+                        Height="34" Margin="0,0,5,0"
+                        IsVisible="{Binding ElementName=Me,Path=ShowKillGameButton}"
+                            />
+
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding ElementName=Me, Path=HideUninstalledGames}" Margin="10 0 5 0">
+                        <CheckBox.Content>
+                            <TextBlock Text="Only Show Installed Games"  />
+                        </CheckBox.Content>
+                    </CheckBox>
+                </WrapPanel>
+            </DockPanel>
+        </Border>
+        <ProgressBar x:Name="RefreshProgressBar" Grid.Row="1" Height="4" IsIndeterminate="{Binding ElementName=Me,Path=IsRefreshingGameList}" Maximum="200" Minimum="0" Foreground="CornflowerBlue">
+            <ProgressBar.Styles>
+               
+            </ProgressBar.Styles>
+            <!-- <ProgressBar.Style> -->
+            <!--     <Style TargetType="{x:Type ProgressBar}"> -->
+            <!--         <Style.Resources> -->
+            <!--             <Storyboard x:Key="InitialRefreshDelayAnimation"> -->
+            <!--                 <DoubleAnimation From="200" To="0" Storyboard.TargetProperty="Value" Duration="{x:Static local:PlayTab.InitialRefreshDelay}" /> -->
+            <!--             </Storyboard> -->
+            <!--             <Storyboard x:Key="NormalRefreshDelayAnimation"> -->
+            <!--                 <DoubleAnimation From="200" To="0" Storyboard.TargetProperty="Value" Duration="{x:Static local:PlayTab.NormalRefreshDelay}" /> -->
+            <!--             </Storyboard> -->
+            <!--         </Style.Resources> -->
+            <!--         <Style.Triggers> -->
+            <!--             <MultiDataTrigger> -->
+            <!--                 <MultiDataTrigger.Conditions> -->
+            <!--                     <Condition Binding="{Binding ElementName=Me, Path=IsRefreshingGameList}" Value="False"/> -->
+            <!--                     <Condition Binding="{Binding ElementName=Me, Path=IsInitialRefresh}" Value="True"/> -->
+            <!--                 </MultiDataTrigger.Conditions> -->
+            <!--                 <MultiDataTrigger.EnterActions> -->
+            <!--                     <BeginStoryboard Name="InitialRefreshDelayBeginStoryboard" Storyboard="{StaticResource InitialRefreshDelayAnimation}"/> -->
+            <!--                 </MultiDataTrigger.EnterActions> -->
+            <!--                 <MultiDataTrigger.ExitActions> -->
+            <!--                     <StopStoryboard BeginStoryboardName="InitialRefreshDelayBeginStoryboard"/> -->
+            <!--                 </MultiDataTrigger.ExitActions> -->
+            <!--             </MultiDataTrigger> -->
+            <!--             <MultiDataTrigger> -->
+            <!--                 <MultiDataTrigger.Conditions> -->
+            <!--                     <Condition Binding="{Binding ElementName=Me, Path=IsRefreshingGameList}" Value="False"/> -->
+            <!--                     <Condition Binding="{Binding ElementName=Me, Path=IsInitialRefresh}" Value="False"/> -->
+            <!--                 </MultiDataTrigger.Conditions> -->
+            <!--                 <MultiDataTrigger.EnterActions> -->
+            <!--                     <BeginStoryboard Name="NormalRefreshDelayBeginStoryboard" Storyboard="{StaticResource NormalRefreshDelayAnimation}"/> -->
+            <!--                 </MultiDataTrigger.EnterActions> -->
+            <!--                 <MultiDataTrigger.ExitActions> -->
+            <!--                     <StopStoryboard BeginStoryboardName="NormalRefreshDelayBeginStoryboard"/> -->
+            <!--                 </MultiDataTrigger.ExitActions> -->
+            <!--             </MultiDataTrigger> -->
+            <!--             <DataTrigger Binding="{Binding ElementName=Me, Path=IsRefreshingGameList}" Value="False"> -->
+            <!--             </DataTrigger> -->
+            <!--         </Style.Triggers> -->
+            <!--     </Style> -->
+            <!-- </ProgressBar.Style> -->
+        </ProgressBar>
+
+        <Border  Grid.Row="2" IsVisible="{Binding ElementName=Me, Path=IsLoggedIn, Converter={StaticResource BooleanInverterConverter}}" >
+            <TextBlock Foreground="GreenYellow"
+                   Text="You are not logged in to OCTGN.  Only games hosted on your Local Area Network (LAN) will be listed here.  Log in to view games hosted online." />
+        </Border>
+        <TextBlock Grid.Row="3" Text="Games Awaiting Players (join to play): " Margin="2" />
+        
+        <DataGrid x:Name="HostingGamesList" Grid.Row="4" ItemsSource="{Binding HostedGameList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PlayTab}}}"
+                  IsReadOnly="True" SelectionMode="Single" SelectedItem="{Binding ElementName=Me, Path=SelectedGame}"
+                  CanUserReorderColumns="True" DoubleTapped="HostingGamesList_OnDoubleTapped"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="False"
+                  GridLinesVisibility="All"  
+                  BorderThickness="1" BorderBrush="Gray">
+            <DataGrid.Columns >
+                <DataGridTemplateColumn CellTemplate="{StaticResource UserIconTemplate}" Width="35"></DataGridTemplateColumn>
+                <DataGridTemplateColumn CellTemplate="{StaticResource IconTemplate}" Width="25"></DataGridTemplateColumn>
+                <DataGridTextColumn Header="User" 
+                                    Binding="{Binding Path=UserName}" Width="100"></DataGridTextColumn>
+                <DataGridTextColumn Header="Game"
+                                    Binding="{Binding Path=GameName}" Width="220"></DataGridTextColumn>
+                <DataGridTextColumn Header="Name"
+                                    Binding="{Binding Path=Name}" Width="300"></DataGridTextColumn>
+                <DataGridTextColumn Header="RunTime"
+                                    Binding="{Binding Path=RunTime}" Width="120"></DataGridTextColumn>
+                <DataGridTextColumn Header="Source"
+                                    Binding="{Binding Path=GameSource}" Width="120"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+       
+        <TextBlock Grid.Row="5" Text="Games in Progress (join to spectate): "  Margin="2" />
+        <GridSplitter  Grid.Row="5" VerticalAlignment="Top"  ResizeDirection="Rows"  ResizeBehavior="PreviousAndNext"/>
+        
+        <DataGrid x:Name="SpectatingGamesList" Grid.Row="6" ItemsSource="{Binding SpectatedGamesList, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:PlayTab}}}"
+                  IsReadOnly="True" SelectionMode="Single" SelectedItem="{Binding ElementName=Me, Path=SelectedGame}"
+                  CanUserReorderColumns="True" DoubleTapped="HostingGamesList_OnDoubleTapped"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="False"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="Gray">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn CellTemplate="{StaticResource UserIconTemplate}" Width="35"></DataGridTemplateColumn>
+                <DataGridTemplateColumn CellTemplate="{StaticResource IconTemplate}" Width="25"></DataGridTemplateColumn>
+                <DataGridTextColumn Header="User"
+                                    Binding="{Binding Path=UserName}" Width="100"></DataGridTextColumn>
+                <DataGridTextColumn Header="Game"
+                                    Binding="{Binding Path=GameName}" Width="220"></DataGridTextColumn>
+                <DataGridTextColumn Header="Name"
+                                    Binding="{Binding Path=Name}" Width="300"></DataGridTextColumn>
+                <DataGridTextColumn Header="RunTime"
+                                    Binding="{Binding Path=RunTime}" Width="120"></DataGridTextColumn>
+                <DataGridTextColumn Header="Source"
+                                    Binding="{Binding Path=GameSource}" Width="120"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!--<TextBlock x:Name="RefreshMessage" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center"
+                   Foreground="White" Background="{x:Null}" FontSize="20">
+            Press the orange refresh button to fetch the game list.
+        </TextBlock>-->
+    </Grid>
+</UserControl>

@@ -46,7 +46,7 @@ public enum DialogResult
     No
 }
 
-public partial class WaitingDialog : UserControl, INotifyPropertyChanged ,IDisposable
+public partial class WaitingDialog : UserControlBase, IDisposable
 {
     public string Message
     {
@@ -140,12 +140,7 @@ public partial class WaitingDialog : UserControl, INotifyPropertyChanged ,IDispo
     }
     #endregion
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void OnPropertyChanged(string propertyName)
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+ 
 
     #region Implementation of IDisposable
 
@@ -160,13 +155,6 @@ public partial class WaitingDialog : UserControl, INotifyPropertyChanged ,IDispo
             foreach (var d in OnClose.GetInvocationList())
             {
                 OnClose -= (Func<object, DialogResult,Task>)d;
-            }
-        }
-        if (PropertyChanged != null)
-        {
-            foreach (var d in PropertyChanged.GetInvocationList())
-            {
-                PropertyChanged -= (PropertyChangedEventHandler)d;
             }
         }
     }

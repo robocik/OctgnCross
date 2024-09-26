@@ -82,8 +82,11 @@ namespace Octgn.Communication
         private bool _isInitialized;
 
         public virtual void Initialize() {
+            if (_isInitialized)
+            {
+                return;
+            }
             if (string.IsNullOrWhiteSpace(Name)) throw new InvalidOperationException($"Module name is invalid");
-            if (_isInitialized) throw new InvalidOperationException($"{nameof(Initialize)} cannot be called more than once.");
             _isInitialized = true;
 
             if (_children == null) return;

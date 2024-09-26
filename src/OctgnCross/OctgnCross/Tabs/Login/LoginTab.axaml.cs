@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using Octgn.Core;
 
 namespace Octgn.Tabs.Login;
 
@@ -40,7 +41,8 @@ public partial class LoginTab : UserControl
     }
 
     #region UI Events
-    private void Button1Click(object sender, RoutedEventArgs e) {
+    private void Button1Click(object sender, RoutedEventArgs e)
+    {
         LoginVM.LoginAsync();
     }
     private void PasswordBox1KeyUp(object sender, KeyEventArgs e)

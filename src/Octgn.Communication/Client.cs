@@ -120,7 +120,8 @@ namespace Octgn.Communication
                 Status = ConnectionStatus.Connected;
 
                 Log.Info($"{this}: Connected");
-            } catch {
+            } catch(Exception ex) {
+                Log.Error(ex);
                 if (Connection != null) {
                     Connection.ConnectionStateChanged -= Connection_ConnectionStateChanged;
                     Connection.RequestReceived -= Connection_RequestReceived;

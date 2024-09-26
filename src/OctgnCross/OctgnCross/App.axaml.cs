@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -7,12 +8,16 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using log4net;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Storage;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using Octgn.Communication.Tcp;
 using Octgn.Core;
+using Octgn.DataNew.Entities;
 using Octgn.Library;
 using Octgn.Library.Communication;
 using Octgn.Online;
@@ -28,14 +33,57 @@ public partial class App : Application
     public static Library.Communication.Client LobbyClient;
     public static bool IsReleaseTest { get; set; }
     public static string SessionKey => Prefs.SessionKey;
+    public static event Action OnOptionsChanged;
+
+    internal static bool IsGameRunning;
+
+    internal static bool InPreGame;
+
+    public static JodsEngineIntegration JodsEngine { get; private set; }
+
+    public static string CurrentOnlineGameName = "";
+    
+    internal static bool IsHost { get; set; }
+    internal static GameMode GameMode { get; set; }
+    public static bool DeveloperMode { get; private set; }
+
+    public App()
+    {
+        
+    }
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        Prefs.Store??= new DefaultPreferencesStore();
+        if (OperatingSystem.IsAndroid())
+        {
+            var stream=AssetLoader.Open(new Uri("avares://OctgnCross/Resources/appsettings.json"));
+            // using var stream=Application.Current.Resources.Open("/Resources/AboutResources.txt");
+            AppConfig.Load(stream);
+        }
+        else
+        {
+            var configFile = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+            using var stream = File.OpenRead(configFile);
+            AppConfig.Load(stream);
+        }
+        try
+        {
+            IsReleaseTest = File.Exists(Path.Combine(Config.Instance.Paths.ConfigDirectory, "TEST"));
+        }
+        catch(Exception ex)
+        {
+            Log.Warn("Error checking for test mode", ex);
+        }
+        var collection = new ServiceCollection();
+        collection.AddCommonServices();
         ApiClient.DefaultUrl = new Uri(AppConfig.WebsitePath);
     }
 
     public override async void OnFrameworkInitializationCompleted()
     {
+        
         Log.Info("Creating Config class");
         try
         {
@@ -47,7 +95,7 @@ public partial class App : Application
             Log.Fatal("Error loading config", ex);
 
             var box = MessageBoxManager
-                .GetMessageBoxStandard($"Error loading Config:{Environment.NewLine}{ex}","Octgn",icon:Icon.Error);
+                .GetMessageBoxStandard("Octgn",$"Error loading Config:{Environment.NewLine}{ex}",icon:Icon.Error);
 
             await box.ShowAsync();
             //
@@ -55,6 +103,10 @@ public partial class App : Application
 
             return;
         }
+        
+        JodsEngine = new JodsEngineIntegration();
+        Log.Info("Configuring game feeds");
+        ConfigureGameFeedTimeout();
         
         Log.Info("Creating Lobby Client");
         var handshaker = new DefaultHandshaker();
@@ -86,6 +138,12 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
+    private static void ConfigureGameFeedTimeout()
+    {
+        var manager = GameFeedManager.Get();
+        manager.FeedUpdateTimeout = TimeSpan.FromSeconds(AppConfig.GameFeedTimeoutSeconds);
+    }
+    
     public static Task LaunchUrl(string url)
     {
         var box = MessageBoxManager

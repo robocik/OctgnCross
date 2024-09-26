@@ -504,8 +504,9 @@ namespace Octgn.Core.DataManagers
                         gamePathDi.MoveDirectory(gravePath);
                         break;
                     }
-                    catch
+                    catch(Exception ex)
                     {
+                        Log.Error("Uninstall error",ex);
                         tryCount++;
                         if (tryCount == 4) throw;
                     }

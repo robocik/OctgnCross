@@ -1,8 +1,9 @@
-<controls:UserControlBase xmlns="https://github.com/avaloniaui"
+<ui:UserControlBase xmlns="https://github.com/avaloniaui"
                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                  xmlns:controls="clr-namespace:OctgnCross.Controls"
+                 xmlns:ui="clr-namespace:OctgnCross.UI;assembly=Octgn.UI"
                  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                  x:Class="OctgnCross.Controls.WaitingDialog" 
                  x:Name="Me" DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -35,4 +36,4 @@
             <ProgressBar Grid.Row="3" Grid.ColumnSpan="2" x:Name="ProgressBar" Height="20" VerticalAlignment="Bottom" Margin="0,5,0,5" IsIndeterminate="True"></ProgressBar>
         </Grid>
     </Border>
-</controls:UserControlBase>
+</ui:UserControlBase>

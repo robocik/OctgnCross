@@ -1,0 +1,58 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             d:DataContext="{d:DesignInstance local:DeckStatsViewModel, IsDesignTimeCreatable=False}"
+             x:Class="Octgn.JodsEngine.Play.Gui.DeckStats">
+    <Border Padding="0,0,0,0" BorderThickness="1 0 0 0" BorderBrush="{StaticResource GlassPanelBorder}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto" IsVisible="{Binding IsVisible}">
+        <ItemsControl ItemsSource="{Binding Cards}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <!-- <DataTemplate.Triggers> -->
+                    <!--     <DataTrigger Binding="{Binding IsFlashing}" Value="True"> -->
+                    <!--         <DataTrigger.EnterActions> -->
+                    <!--             <BeginStoryboard> -->
+                    <!--                 <Storyboard AutoReverse="True" RepeatBehavior="3x"> -->
+                    <!--                     <ColorAnimation Storyboard.TargetName="ImageOverlay" Storyboard.TargetProperty="(Grid.Background).(SolidColorBrush.Color)" From="#CC333333" To="White" Duration="0:0:.5" /> -->
+                    <!--                     <ColorAnimation Storyboard.TargetName="NameBox" Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)" From="White" To="#FF563E00" Duration="0:0:.5" /> -->
+                    <!--                 </Storyboard> -->
+                    <!--             </BeginStoryboard> -->
+                    <!--         </DataTrigger.EnterActions> -->
+                    <!--     </DataTrigger> -->
+                    <!-- </DataTemplate.Triggers> -->
+                    <Border CornerRadius="0" Height="30" Margin="0 0 0 1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="45"/>
+                                <ColumnDefinition Width="100*"/>
+                            </Grid.ColumnDefinitions>
+                            <Popup x:Name="ElementPopup"
+                                   IsOpen="{Binding RelativeSource={RelativeSource Mode=TemplatedParent},Path=IsMouseOver,Mode=OneWay}"
+                                   Placement="Left"
+                                   PlacementTarget="{x:Null}"  Focusable="False">
+                                <Border Width="300" Height="400">
+                                    <Image Source="{Binding Image}" Stretch="Uniform" />
+                                </Border>
+                            </Popup>
+                            <Image Source="{Binding Image}" Stretch="UniformToFill" Grid.ColumnSpan="2" VerticalAlignment="Center"/>
+                            <Border x:Name="ImageOverlay" Background="#CC333333" Grid.ColumnSpan="2" Padding="3"/>
+                            <Border Background="Black" BorderBrush="Gold" BorderThickness="1" CornerRadius="3" Padding="3" Margin="3 3 3 3">
+                                <TextBlock x:Name="CountBox" Text="{Binding CardCount}" Foreground="Wheat" VerticalAlignment="Center" HorizontalAlignment="Center" />
+
+                            </Border>
+                            <TextBlock x:Name="NameBox" Text="{Binding Name}" Foreground="White" Grid.Column="1" VerticalAlignment="Center" FontSize="16"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </ScrollViewer>
+</Border>
+</UserControl>

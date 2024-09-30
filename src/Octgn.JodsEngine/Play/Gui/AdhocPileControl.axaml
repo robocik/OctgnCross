@@ -1,0 +1,54 @@
+<gui:PileBaseControl xmlns="https://github.com/avaloniaui"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:gui="clr-namespace:Octgn.Play.Gui"
+                 xmlns:ui="clr-namespace:OctgnCross.UI;assembly=Octgn.UI"
+                 x:Name="me"
+                 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                 x:Class="Octgn.JodsEngine.Play.Gui.AdhocPileControl"
+                 Width="{Binding ElementName=me,Path=CardWidth}"
+                 Height="{Binding ElementName=me,Path=CardHeight}"
+                 >
+    <!-- MouseMove="MoveThumb_OnMouseMove" -->
+    <!-- MouseLeftButtonUp="MoveThumb_OnMouseLeftButtonUp" -->
+    <UserControl.Resources>
+        <DataTemplate x:Key="CardTemplate">
+            <!-- <gui:CardControl /> -->
+        </DataTemplate>
+    </UserControl.Resources>
+    <Border Padding="2" >
+        <Grid x:Name="grid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Top" >
+                <Border  x:Name="DragBorder"  
+                         PointerPressed="MoveThumb_OnMouseLeftButtonDown"
+                         Cursor="SizeAll"
+						
+                >
+                    <StackPanel Orientation="Horizontal">
+                        <ui:TextOrIcon Text="{Binding Name}" Icon="{Binding Definition.Icon}" Height="16" />
+                        <Grid Width="20"/>
+                        <TextBlock Text="{Binding Cards.Count}" VerticalAlignment="Center" FontWeight="Bold" Margin="5 0 0 0" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- <gui:CardControl x:Name="cardsCtrl" DataContext="{Binding TopCard}"> -->
+            <!--     ~1~ <gui:CardControl.Style> @1@ -->
+            <!--     ~1~     <Style> @1@ -->
+            <!--     ~1~         <Style.Triggers> @1@ -->
+            <!--     ~1~             <DataTrigger Binding="{Binding}" Value="{x:Null}"> @1@ -->
+            <!--     ~1~                 <Setter Property="UIElement.Visibility" Value="Collapsed" /> @1@ -->
+            <!--     ~1~             </DataTrigger> @1@ -->
+            <!--     ~1~         </Style.Triggers> @1@ -->
+            <!--     ~1~     </Style> @1@ -->
+            <!--     ~1~ </gui:CardControl.Style> @1@ -->
+            <!-- </gui:CardControl> -->
+        </Grid>
+    </Border>
+</gui:PileBaseControl>

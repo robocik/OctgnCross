@@ -1,0 +1,93 @@
+<gui:GroupControl xmlns="https://github.com/avaloniaui"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+              xmlns:gui="clr-namespace:Octgn.Play.Gui"
+              xmlns:play="clr-namespace:Octgn.Play"
+              xmlns:octgn="clr-namespace:Octgn.JodsEngine"
+              x:Name="This" AutomationProperties.Name="Table"
+               Background="Beige"  ClipToBounds="True"
+              Focusable="True" 
+              
+              x:Class="Octgn.JodsEngine.Play.Gui.TableControl">
+    <!-- LostFocus="This_LostFocus"  ManipulationDelta="OnManipulationDelta" IsManipulationEnabled="True" ManipulationStarting="OnManipulationStarting" -->
+    <Grid>
+        <Line x:Name="middleLine"  Stretch="Fill"  StartPoint="0,0" EndPoint="1,0"
+          VerticalAlignment="Top" HorizontalAlignment="Stretch" StrokeThickness="1">
+            <Line.Stroke>
+                <LinearGradientBrush SpreadMethod="Repeat" StartPoint="0,0" EndPoint="30,0">
+                    <GradientStop Offset="0" Color="#80ffffff" />
+                    <GradientStop Offset="0.45" Color="#80ffffff" />
+                    <GradientStop Offset="0.55" Color="#80000000" />
+                    <GradientStop Offset="1" Color="#80000000" />
+                </LinearGradientBrush>
+            </Line.Stroke>
+            <Line.RenderTransform>
+                <TranslateTransform Y="{Binding ElementName=This, Path=YCenterOffset}" />
+            </Line.RenderTransform>
+        </Line>
+        <Viewbox x:Name="viewbox">
+            <!--<Grid>-->
+            <!-- <AdornerDecorator x:Name="adDecorator"> -->
+            <!--     <AdornerDecorator.RenderTransform> -->
+            <!--         <TransformGroup x:Name="transforms"> -->
+            <!--             <ScaleTransform ScaleX="{Binding ElementName=This,Path=Zoom}" ScaleY="{Binding ElementName=This,Path=Zoom}" -->
+            <!--                 CenterX="0" CenterY="0" /> -->
+            <!--             <TranslateTransform X="{Binding ElementName=This,Path=Offset.X}" -->
+            <!--                     Y="{Binding ElementName=This,Path=Offset.Y}" /> -->
+            <!--             <RotateTransform Angle="{Binding ElementName=This,Path=Angle}"/> -->
+            <!--         </TransformGroup> -->
+            <!--     </AdornerDecorator.RenderTransform> -->
+            <!--     <Grid x:Name="boardContainer" ClipToBounds="False"> -->
+            <!--         <Image -->
+            <!--             IsVisible="{Binding Source={x:Static octgn:Program.GameSettings}, Path=ShowBoard}" -->
+            <!--             Source="{Binding Source={x:Static octgn:Program.GameEngine},Path=BoardImage, Converter={StaticResource UriToSafeImageConverter}}" -->
+            <!--             Width="{Binding Source={x:Static octgn:Program.GameEngine},Path=GameBoard.Width}" -->
+            <!--             Height="{Binding Source={x:Static octgn:Program.GameEngine},Path=GameBoard.Height}" -->
+            <!--             Margin="{Binding Source={x:Static octgn:Program.GameEngine},Path=BoardMargin}" -->
+            <!--             HorizontalAlignment="Left" -->
+            <!--             VerticalAlignment="Top" -->
+            <!--             /> -->
+            <!--         <Canvas ZIndex="5" x:Name="NoteCanvas"> -->
+            <!--             <Canvas.RenderTransform> -->
+            <!--                 <RotateTransform Angle="0"/> -->
+            <!--             </Canvas.RenderTransform> -->
+            <!--         </Canvas> -->
+            <!--     <Canvas ZIndex="4" x:Name="PlayerCanvas" Left="-100" Top="100"> -->
+            <!--             <Canvas.RenderTransform> -->
+            <!--                 <RotateTransform Angle="0"/> -->
+            <!--             </Canvas.RenderTransform> -->
+            <!--         </Canvas>--> 
+            <!--         <ItemsControl x:Name="cardsView" ItemsSource="{Binding Cards}" -->
+            <!--             Focusable="False"> -->
+            <!--             <ItemsControl.ItemTemplate> -->
+            <!--                 <DataTemplate DataType="play:Card"> -->
+            <!--                     <gui:CardControl Width="{Binding Path=RealWidth}" Height="{Binding Path=RealHeight}" /> -->
+            <!--                 </DataTemplate> -->
+            <!--             </ItemsControl.ItemTemplate> -->
+            <!--             <ItemsControl.ItemsPanel> -->
+            <!--                 <ItemsPanelTemplate> -->
+            <!--                     <gui:TableCanvas Width="{Binding Definition.Width}" Height="{Binding Definition.Height}" -->
+            <!--                      ClipToBounds="False" /> -->
+            <!--                 </ItemsPanelTemplate> -->
+            <!--             </ItemsControl.ItemsPanel> -->
+            <!--             ~1~ <ItemsControl.ItemContainerStyle> @1@ -->
+            <!--             ~1~     <Style TargetType="ContentPresenter"> @1@ -->
+            <!--             ~1~         <Setter Property="ContentTemplate"> @1@ -->
+            <!--             ~1~             <Setter.Value> @1@ -->
+            <!--             ~1~                 <DataTemplate> @1@ -->
+            <!--             ~1~                     <ContentPresenter Content="{Binding}"/> @1@ -->
+            <!--             ~1~                 </DataTemplate> @1@ -->
+            <!--             ~1~             </Setter.Value> @1@ -->
+            <!--             ~1~         </Setter> @1@ -->
+            <!--             ~1~         <Setter Property="Canvas.Left" Value="{Binding X}" /> @1@ -->
+            <!--             ~1~         <Setter Property="Canvas.Top" Value="{Binding Y}" /> @1@ -->
+            <!--             ~1~     </Style> @1@ -->
+            <!--             ~1~ </ItemsControl.ItemContainerStyle> @1@ -->
+            <!--         </ItemsControl> -->
+            <!--     </Grid> -->
+            <!-- </AdornerDecorator> -->
+            <!--</Grid>-->
+        </Viewbox>
+    </Grid>
+</gui:GroupControl>

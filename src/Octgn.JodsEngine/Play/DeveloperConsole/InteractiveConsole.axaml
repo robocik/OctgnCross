@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" 
+             FontFamily="Lucida Console"
+             x:Class="Octgn.JodsEngine.Play.DeveloperConsole.InteractiveConsole">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Bottom">
+            <TextBlock Text=">>> " DockPanel.Dock="Left" VerticalAlignment="Top" Margin="3,3,0,0" />
+            <TextBox x:Name="prompt" AcceptsReturn="True" AcceptsTab="True" KeyDown="PromptKeyDown" />
+        </DockPanel>
+        <ScrollViewer x:Name="scroller">
+            <TextBlock x:Name="results" Padding="3" VerticalAlignment="Bottom" TextWrapping="Wrap" />
+        </ScrollViewer>
+    </DockPanel>
+</UserControl>

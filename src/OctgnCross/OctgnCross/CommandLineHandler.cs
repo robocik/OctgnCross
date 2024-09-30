@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using log4net;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
+using NDesk.Options;
 using Octgn.Launchers;
 using ILauncher = Avalonia.Platform.Storage.ILauncher;
 
@@ -62,22 +63,22 @@ public class CommandLineHandler
             int? hostport = null;
             Guid? gameid = null;
             string deckPath = null;
-            // var os = new Mono.Options.OptionSet()
-            // {
-            //     {"t|table", x => tableOnly = true},
-            //     {"g|game=", x => gameid = Guid.Parse(x)},
-            //     {"d|deck=", x => deckPath = x},
-            //     {"x|devmode", x => DevMode = true},
-            //     {"e|editor", x => editorOnly = true}
-            // };
-            // try
-            // {
-            //     os.Parse(args);
-            // }
-            // catch (Exception e)
-            // {
-            //     Log.Warn("Parse args exception: " + String.Join(",", Environment.GetCommandLineArgs()), e);
-            // }
+            var os = new OptionSet()
+            {
+                {"t|table", x => tableOnly = true},
+                {"g|game=", x => gameid = Guid.Parse(x)},
+                {"d|deck=", x => deckPath = x},
+                {"x|devmode", x => DevMode = true},
+                {"e|editor", x => editorOnly = true}
+            };
+            try
+            {
+                os.Parse(args);
+            }
+            catch (Exception e)
+            {
+                Log.Warn("Parse args exception: " + String.Join(",", Environment.GetCommandLineArgs()), e);
+            }
             if (tableOnly)
             {
                 if (gameid == null) {

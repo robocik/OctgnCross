@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Octgn.JodsEngine.Windows.LoadingWindow" WindowStartupLocation="CenterScreen"
+        Title="Loading Octgn..." Height="150" Width="300" Background="#333333" CanResize="false">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10" />
+        </Grid.RowDefinitions>
+        <TextBlock Foreground="White"
+                   Grid.Row="0"
+                   FontSize="16"
+                   FontWeight="Bold"
+                   Text="Loading..."
+                   Margin="5"
+                   Name="lblStatus"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   TextWrapping="Wrap"/>
+        <ProgressBar Name="progressBar1" IsIndeterminate="True" Grid.Row="1"/>
+    </Grid>
+</Window>

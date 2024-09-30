@@ -1,9 +1,10 @@
-<controls:UserControlBase xmlns="https://github.com/avaloniaui"
+<ui:UserControlBase xmlns="https://github.com/avaloniaui"
                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                      xmlns:controls="clr-namespace:OctgnCross.Controls"
                      xmlns:viewModels="clr-namespace:Octgn.ViewModels"
+                     xmlns:ui="clr-namespace:OctgnCross.UI;assembly=Octgn.UI"
                      mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                      x:Class="OctgnCross.Controls.HostGameSettings">
    <Border x:Name="BorderHostGame" MinHeight="200" IsVisible="true" Padding="0"
@@ -188,4 +189,4 @@
         </Border>
     </Grid>
 </Border>
-</controls:UserControlBase>
+</ui:UserControlBase>

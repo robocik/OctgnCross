@@ -22,6 +22,7 @@ using Octgn.Library;
 using Octgn.Library.Communication;
 using Octgn.Online;
 using Octgn.Site.Api;
+using Octgn.UI;
 using Octgn.ViewModels;
 using Octgn.Views;
 
@@ -31,7 +32,7 @@ public partial class App : Application
 {
     internal static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod()!.DeclaringType);
     public static Library.Communication.Client LobbyClient;
-    public static bool IsReleaseTest { get; set; }
+    
     public static string SessionKey => Prefs.SessionKey;
     public static event Action OnOptionsChanged;
 
@@ -68,14 +69,7 @@ public partial class App : Application
             using var stream = File.OpenRead(configFile);
             AppConfig.Load(stream);
         }
-        try
-        {
-            IsReleaseTest = File.Exists(Path.Combine(Config.Instance.Paths.ConfigDirectory, "TEST"));
-        }
-        catch(Exception ex)
-        {
-            Log.Warn("Error checking for test mode", ex);
-        }
+        
         var collection = new ServiceCollection();
         collection.AddCommonServices();
         ApiClient.DefaultUrl = new Uri(AppConfig.WebsitePath);
@@ -103,7 +97,14 @@ public partial class App : Application
 
             return;
         }
-        
+        try
+        {
+            Const.IsReleaseTest = File.Exists(Path.Combine(Config.Instance.Paths.ConfigDirectory, "TEST"));
+        }
+        catch(Exception ex)
+        {
+            Log.Warn("Error checking for test mode", ex);
+        }
         JodsEngine = new JodsEngineIntegration();
         Log.Info("Configuring game feeds");
         ConfigureGameFeedTimeout();

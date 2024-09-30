@@ -6,7 +6,7 @@ using Octgn.Core;
 using Octgn.Extentions;
 using Octgn.Library.Localization;
 using Octgn.Site.Api;
-using ViewModelBase = Octgn.ViewModels.ViewModelBase;
+using ViewModelBase = Octgn.UI.ViewModelBase;
 
 namespace Octgn.Tabs.Login;
 

@@ -36,6 +36,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.LogExporter", "O
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfCircularProgressBar", "WpfCircularProgressBar\WpfCircularProgressBar.csproj", "{3981A614-9827-4800-8DEB-ED1DC8720767}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.JodsEngine", "Octgn.JodsEngine\Octgn.JodsEngine.csproj", "{D43D2B26-7C43-41DA-AD3E-CFC4CC334449}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.UI", "Octgn.UI\Octgn.UI.csproj", "{0533FD2D-6C67-4CF8-A856-7DD5720582EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +114,14 @@ Global
 		{3981A614-9827-4800-8DEB-ED1DC8720767}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3981A614-9827-4800-8DEB-ED1DC8720767}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3981A614-9827-4800-8DEB-ED1DC8720767}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D43D2B26-7C43-41DA-AD3E-CFC4CC334449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D43D2B26-7C43-41DA-AD3E-CFC4CC334449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D43D2B26-7C43-41DA-AD3E-CFC4CC334449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D43D2B26-7C43-41DA-AD3E-CFC4CC334449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0533FD2D-6C67-4CF8-A856-7DD5720582EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0533FD2D-6C67-4CF8-A856-7DD5720582EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0533FD2D-6C67-4CF8-A856-7DD5720582EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0533FD2D-6C67-4CF8-A856-7DD5720582EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{796ECE56-FBE2-481B-8107-904903869032} = {DAB05253-50BE-4D94-9914-5E709AE4C6C4}

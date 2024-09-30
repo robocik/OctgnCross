@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:gui="clr-namespace:Octgn.Play.Gui"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Octgn.JodsEngine.Windows.GameLog">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <!-- <gui:ChatControl x:Name="ChatControl" IgnoreMute="True" ShowInput="False"/> -->
+        <Border  Grid.Row="1" Padding="10">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Save Log" Padding="10,0,10,0" Click="Button_Click"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

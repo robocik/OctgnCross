@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using MsBox.Avalonia.Enums;
+using OctgnCross.UI;
 
 namespace OctgnCross.Controls;
 

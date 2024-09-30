@@ -30,6 +30,7 @@ using Octgn.Library.Networking;
 using Octgn.Utils;
 using OctgnCross.Controls;
 using OctgnCross.Core;
+using OctgnCross.UI;
 
 namespace OctgnCross.Tabs.GameManagement;
 

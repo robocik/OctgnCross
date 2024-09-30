@@ -5,13 +5,16 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using log4net;
 using Octgn.Communication;
 using Octgn.Core;
 using Octgn.Core.DataManagers;
+using Octgn.JodsEngine.Windows;
 using Octgn.Library;
 using Octgn.Library.Exceptions;
 using Octgn.Online.Hosting;
+using Octgn.UI;
 using Octgn.ViewModels;
 using OctgnCross.Tabs.Play;
 
@@ -163,59 +166,72 @@ public class JodsEngineIntegration
         return LaunchJodsEngine(args);
     }
 
-    private async Task<bool> LaunchJodsEngine(string args) {
-        string enginePath;
-        string engineDirectory;
+    // private async Task<bool> LaunchJodsEngine(string args) {
+    //     string enginePath;
+    //     string engineDirectory;
+    //     {
+    //         var exeName = "Octgn.JodsEngine.exe";
+    //         engineDirectory = ".\\";
+    //         if (X.Instance.Debug) {
+    //             engineDirectory = "..\\..\\..\\Octgn.JodsEngine\\bin\\Debug";
+    //             exeName = "Octgn.JodsEngine.exe";
+    //         }
+    //
+    //         engineDirectory = Path.GetFullPath(engineDirectory);
+    //
+    //         enginePath = Path.Combine(engineDirectory, exeName);
+    //     }
+    //
+    //     Log.Info($"Launching engine {enginePath} - {args}");
+    //
+    //     var psi = new ProcessStartInfo(enginePath, args);
+    //     psi.UseShellExecute = true;
+    //     psi.WorkingDirectory = engineDirectory;
+    //
+    //     var proc = Process.Start(psi);
+    //
+    //     try {
+    //         using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10))) {
+    //             await Task.Run(async () => {
+    //                 while (proc.MainWindowHandle == IntPtr.Zero) {
+    //                     await Task.Delay(1000, cts.Token);
+    //                     if (proc.HasExited) {
+    //                         break;
+    //                     }
+    //                 }
+    //             }, cts.Token);
+    //         }
+    //     } catch (OperationCanceledException) {
+    //         Log.Warn("Engine did not show UI withing alloted time. Probably frozen.");
+    //
+    //         try {
+    //             proc.Kill();
+    //         } catch (Exception ex) {
+    //             Log.Warn($"Error killing proc: {ex.Message}", ex);
+    //         }
+    //
+    //         return false;
+    //     }
+    //
+    //     if (proc.HasExited) {
+    //         Log.Warn("Engine prematurely shutdown");
+    //
+    //         return false;
+    //     }
+    //
+    //     return true;
+    // }
+    
+    private async Task<bool> LaunchJodsEngine(string args)
+    {
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var exeName = "Octgn.JodsEngine.exe";
-            engineDirectory = ".\\";
-            if (X.Instance.Debug) {
-                engineDirectory = "..\\..\\..\\Octgn.JodsEngine\\bin\\Debug";
-                exeName = "Octgn.JodsEngine.exe";
-            }
+            var loadingWindow = new LoadingWindow(args);
 
-            engineDirectory = Path.GetFullPath(engineDirectory);
-
-            enginePath = Path.Combine(engineDirectory, exeName);
-        }
-
-        Log.Info($"Launching engine {enginePath} - {args}");
-
-        var psi = new ProcessStartInfo(enginePath, args);
-        psi.UseShellExecute = true;
-        psi.WorkingDirectory = engineDirectory;
-
-        var proc = Process.Start(psi);
-
-        try {
-            using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10))) {
-                await Task.Run(async () => {
-                    while (proc.MainWindowHandle == IntPtr.Zero) {
-                        await Task.Delay(1000, cts.Token);
-                        if (proc.HasExited) {
-                            break;
-                        }
-                    }
-                }, cts.Token);
-            }
-        } catch (OperationCanceledException) {
-            Log.Warn("Engine did not show UI withing alloted time. Probably frozen.");
-
-            try {
-                proc.Kill();
-            } catch (Exception ex) {
-                Log.Warn($"Error killing proc: {ex.Message}", ex);
-            }
-
-            return false;
-        }
-
-        if (proc.HasExited) {
-            Log.Warn("Engine prematurely shutdown");
-
-            return false;
-        }
-
+            loadingWindow.Show();
+        });
+        
         return true;
     }
 

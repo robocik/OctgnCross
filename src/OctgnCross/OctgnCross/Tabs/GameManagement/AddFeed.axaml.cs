@@ -1,11 +1,13 @@
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using DialogHostAvalonia;
 using Octgn.Core;
 using OctgnCross.Controls;
+using OctgnCross.UI;
 
 namespace OctgnCross.Tabs.GameManagement;
 

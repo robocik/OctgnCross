@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
-
+using Avalonia.Platform.Storage;
 using Octgn.DataNew;
 using Octgn.DataNew.Entities;
 using Octgn.Library.Exceptions;
@@ -21,11 +21,11 @@ namespace Octgn.Core.DataExtensionMethods
     public static class DeckExtensionMethods
     {
         internal static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-        public static void Save(this IDeck deck, Game game, string path)
+        public static async Task Save(this IDeck deck, Game game, IStorageFile file)
         {
             try
             {
-                using (var fs = File.Open(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
+                using (var fs = await file.OpenWriteAsync())
                 {
                     var settings = new XmlWriterSettings();
                     settings.Indent = true;
@@ -33,7 +33,7 @@ namespace Octgn.Core.DataExtensionMethods
 
                     var writer = XmlWriter.Create(fs, settings);
 
-                    writer.WriteStartDocument(true);
+                    await writer.WriteStartDocumentAsync(true);
                     {
                         writer.WriteStartElement("deck");
                         writer.WriteAttributeString("game", game.Id.ToString());
@@ -47,29 +47,29 @@ namespace Octgn.Core.DataExtensionMethods
                                 writer.WriteStartElement("card");
                                 writer.WriteAttributeString("qty", c.Quantity.ToString());
                                 writer.WriteAttributeString("id", c.Id.ToString());
-                                writer.WriteString(c.Name);
-                                writer.WriteEndElement();
+                                await writer.WriteStringAsync(c.Name);
+                                await writer.WriteEndElementAsync();
                             }
-                            writer.WriteEndElement();
+                            await writer.WriteEndElementAsync();
                         }
                         { // Write Notes
                             writer.WriteStartElement("notes");
-                            writer.WriteCData(deck.Notes);
-                            writer.WriteEndElement();
+                            await writer.WriteCDataAsync(deck.Notes);
+                            await writer.WriteEndElementAsync();
                         }
                         { // Write Sleeve
                             if (deck.Sleeve != null) {
                                 writer.WriteStartElement("sleeve");
                                 var sleeveString = Sleeve.ToString(deck.Sleeve);
                                 writer.WriteValue(sleeveString);
-                                writer.WriteEndElement();
+                                await writer.WriteEndElementAsync();
                             }
                         }
 
-                        writer.WriteEndElement();
+                        await writer.WriteEndElementAsync();
                     }
-                    writer.WriteEndDocument();
-                    writer.Flush();
+                    await writer.WriteEndDocumentAsync();
+                    await writer.FlushAsync();
                     writer.Close();
                 }
                 // assume players will want to play with their new deck
@@ -77,17 +77,17 @@ namespace Octgn.Core.DataExtensionMethods
             }
             catch (PathTooLongException)
             {
-                throw new UserMessageException(L.D.Exception__CanNotSaveDeckPathTooLong_Format, path);
+                throw new UserMessageException(L.D.Exception__CanNotSaveDeckPathTooLong_Format, file.Name);
             }
             catch (IOException e)
             {
-                Log.Error(String.Format("Problem saving deck to path {0}", path), e);
-                throw new UserMessageException(L.D.Exception__CanNotSaveDeckIOError_Format, path, e.Message);
+                Log.Error(String.Format("Problem saving deck to path {0}", file.Name), e);
+                throw new UserMessageException(L.D.Exception__CanNotSaveDeckIOError_Format, file.Name, e.Message);
             }
             catch (Exception e)
             {
-                Log.Error(String.Format("Problem saving deck to path {0}", path), e);
-                throw new UserMessageException(L.D.Exception__CanNotSaveDeckUnspecified_Format, path);
+                Log.Error(String.Format("Problem saving deck to path {0}", file.Name), e);
+                throw new UserMessageException(L.D.Exception__CanNotSaveDeckUnspecified_Format, file.Name);
             }
         }
 
@@ -128,23 +128,23 @@ namespace Octgn.Core.DataExtensionMethods
             }
         }
 
-        public static IDeck Load(this IDeck deck, string path, bool cloneCards = true)
+        public static async Task<IDeck> Load(this IDeck deck, IStorageFile file, bool cloneCards = true)
         {
             var ret = new Deck();
             try
             {
                 Game game = null;
-                using (var fs = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                using (var fs = await file.OpenReadAsync())
                 {
                     var doc = XDocument.Load(fs);
                     var gameId = Guid.Parse(doc.Descendants("deck").First().Attribute("game").Value);
                     game = Octgn.Core.DataManagers.GameManager.Get().GetById(gameId);
                     if (game == null)
                     {
-                        throw new UserMessageException(L.D.Exception__CanNotLoadDeckGameNotInstalled_Format, path);
+                        throw new UserMessageException(L.D.Exception__CanNotLoadDeckGameNotInstalled_Format, file.Name);
                     }
                 }
-                return deck.Load(game, path, cloneCards);
+                return await deck.Load(game, file, cloneCards);
             }
             catch (UserMessageException)
             {
@@ -152,18 +152,18 @@ namespace Octgn.Core.DataExtensionMethods
             }
             catch (Exception e)
             {
-                Log.Error(String.Format("Problem loading deck from path {0}", path), e);
-                throw new UserMessageException(L.D.Exception__CanNotLoadDeckUnspecified_Format, path);
+                Log.Error(String.Format("Problem loading deck from path {0}", file.Name), e);
+                throw new UserMessageException(L.D.Exception__CanNotLoadDeckUnspecified_Format, file.Name);
             }
         }
-        public static IDeck Load(this IDeck deck, Game game, string path, bool cloneCards = true)
+        public static async Task<IDeck> Load(this IDeck deck, Game game, IStorageFile file, bool cloneCards = true)
         {
             var ret = new Deck();
             ret.Sections = new List<ISection>();
             try
             {
                 var cards = game.Sets().SelectMany(x => x.Cards).ToArray();
-                using (var fs = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
+                using (var fs = await file.OpenReadAsync())
                 {
                     var doc = XDocument.Load(fs);
                     var gameId = Guid.Parse(doc.Descendants("deck").First().Attribute("game").Value);
@@ -187,7 +187,7 @@ namespace Octgn.Core.DataExtensionMethods
                                 var cardN = cardelem.Value;
                                 card = cards.FirstOrDefault(x => x.Name.Equals(cardN, StringComparison.CurrentCultureIgnoreCase));
                                 if (card == null)
-                                    throw new UserMessageException(L.D.Exception__CanNotLoadDeckCardNotInstalled_Format, path, cardId, cardN);
+                                    throw new UserMessageException(L.D.Exception__CanNotLoadDeckCardNotInstalled_Format, file.Name, cardId, cardN);
                             }
                             (section.Cards as IList<IMultiCard>).Add(card.ToMultiCard(cardq, cloneCards));
                         }
@@ -249,7 +249,7 @@ namespace Octgn.Core.DataExtensionMethods
                 if (ret.IsShared)
                 {
                     ret.IsShared = false;
-                    ret.Save(game, path);
+                    await ret.Save(game, file);
                 }
                 deck = ret;
                 return deck;
@@ -260,32 +260,32 @@ namespace Octgn.Core.DataExtensionMethods
             }
             catch (FormatException e)
             {
-                Log.Error(String.Format("Problem loading deck from path {0}", path), e);
-                throw new UserMessageException(L.D.Exception__CanNotLoadDeckCorrupt_Format, path);
+                Log.Error(String.Format("Problem loading deck from path {0}", file.Name), e);
+                throw new UserMessageException(L.D.Exception__CanNotLoadDeckCorrupt_Format, file.Name);
             }
             catch (NullReferenceException e)
             {
-                Log.Error(String.Format("Problem loading deck from path {0}", path), e);
-                throw new UserMessageException(L.D.Exception__CanNotLoadDeckCorrupt_Format, path);
+                Log.Error(String.Format("Problem loading deck from path {0}", file.Name), e);
+                throw new UserMessageException(L.D.Exception__CanNotLoadDeckCorrupt_Format, file.Name);
             }
             catch (XmlException e)
             {
-                Log.Error(String.Format("Problem loading deck from path {0}", path), e);
-                throw new UserMessageException(L.D.Exception__CanNotLoadDeckCorrupt_Format, path);
+                Log.Error(String.Format("Problem loading deck from path {0}", file.Name), e);
+                throw new UserMessageException(L.D.Exception__CanNotLoadDeckCorrupt_Format, file.Name);
             }
             catch (FileNotFoundException)
             {
-                throw new UserMessageException(L.D.Exception__CanNotLoadDeckFileNotFound_Format, path);
+                throw new UserMessageException(L.D.Exception__CanNotLoadDeckFileNotFound_Format,  file.Name);
             }
             catch (IOException e)
             {
-                Log.Error(String.Format("Problem loading deck from path {0}", path), e);
-                throw new UserMessageException(L.D.Exception__CanNotLoadDeckIOError_Format, path, e.Message);
+                Log.Error(String.Format("Problem loading deck from path {0}",  file.Name), e);
+                throw new UserMessageException(L.D.Exception__CanNotLoadDeckIOError_Format,  file.Name, e.Message);
             }
             catch (Exception e)
             {
-                Log.Error(String.Format("Problem loading deck from path {0}", path), e);
-                throw new UserMessageException(L.D.Exception__CanNotLoadDeckUnspecified_Format, path);
+                Log.Error(String.Format("Problem loading deck from path {0}",  file.Name), e);
+                throw new UserMessageException(L.D.Exception__CanNotLoadDeckUnspecified_Format,  file.Name);
             }
         }
         public static int CardCount(this IDeck deck)

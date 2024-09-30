@@ -188,17 +188,15 @@ namespace Octgn.Site.Api
             return int.Parse(istr.Trim());
         }
 
-        public SharedDeckUploadResult ShareDeck(string username, string password, string name, string path) {
+        public SharedDeckUploadResult ShareDeck(string username, string password, string name, Stream deckstream) {
             var client = Client;
-            using (var deckstream = File.OpenRead(path)) {
-                var resp =
-                    client.PutAsync(
-                        "api/shareddeck/?username=" + HttpUtility.UrlEncode(username) + "&password="
-                        + HttpUtility.UrlEncode(password) + "&name=" + HttpUtility.UrlEncode(name),
-                        new StreamContent(deckstream)).Result;
+            var resp =
+                client.PutAsync(
+                    "api/shareddeck/?username=" + HttpUtility.UrlEncode(username) + "&password="
+                    + HttpUtility.UrlEncode(password) + "&name=" + HttpUtility.UrlEncode(name),
+                    new StreamContent(deckstream)).Result;
 
-                return resp.Content.ReadAsAsync<SharedDeckUploadResult>().Result;
-            }
+            return resp.Content.ReadAsAsync<SharedDeckUploadResult>().Result;
         }
 
         public List<SharedDeckInfo> GetUsersSharedDecks(string username) {

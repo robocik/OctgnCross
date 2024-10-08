@@ -148,47 +148,24 @@ public partial class PlayWindow : OctgnCross.UI.WindowBase
 
         public ReplayEngine ReplayEngine { get; }
 
-        public PlayWindow()
+        public async Task Init()
         {
-            GameSettings = Program.GameSettings;
-            IsHost = Program.IsHost;
-            GameMessages = new ObservableCollection<IGameMessage>();
-            _gameMessageReader = new GameMessageDispatcherReader(Program.GameMess);
-            var isLocal = Program.GameEngine.IsLocal;
-            DataContext = Program.GameEngine;
-
-            ReplayEngine = Program.GameEngine.ReplayEngine;
-
-            InitializeComponent();
-
-
-            if (Program.GameEngine.IsReplay) {
-                foreach (var eve in ReplayEngine.AllEvents) {
-                    if (eve.Type == ReplayEventType.NextTurn) {
-                        ReplaySlider.Ticks.Add(eve.Time.Ticks);
-                    }
-                }
-
-                ReplayControls.IsVisible =true;
-            } else {
-                ReplayControls.IsVisible = false;
-            }
-
-            _isLocal = isLocal;
             //Application.Current.MainWindow = this;
             Version oversion = Assembly.GetExecutingAssembly().GetName().Version;
             Title = "Octgn  version : " + oversion + " : " + Program.GameEngine.Definition.Name;
+
             // Program.GameEngine.ComposeParts(this);
             Program.ScriptEngine = new Engine();
             if (Program.GameEngine.AllPhases.Count() < 1) PhaseControl.IsVisible = false;
             this.Loaded += OnLoaded;
+
             // this.chat.MouseEnter += ChatOnMouseEnter;
             // this.chat.MouseLeave += ChatOnMouseLeave;
             this.playerTabs.PointerEntered += PlayerTabsOnMouseEnter;
             this.playerTabs.PointerExited += PlayerTabsOnMouseLeave;
             this.chatIsDocked = true;
             // this.ChatToggleChecked.IsChecked = false;
-            this.PreGameLobby.OnClose += delegate
+            this.PreGameLobby.OnClose += async delegate
             {
                 try {
                     if (this.PreGameLobby.StartingGame) {
@@ -225,11 +202,6 @@ public partial class PlayWindow : OctgnCross.UI.WindowBase
                     }
                 } catch (Exception ex) {
                     Log.Fatal($"PreGameLobby On Close Error: {ex.Message}", ex);
-
-                    var box = MessageBoxManager
-                        .GetMessageBoxStandard("Error","Octgn encountered an error and needs to close.",icon:MsBox.Avalonia.Enums.Icon.Error);
-
-                    box.ShowAsync();
 
                     IsRealClosing = true;
 
@@ -297,6 +269,35 @@ public partial class PlayWindow : OctgnCross.UI.WindowBase
                 Program.OnOptionsChanged -= ProgramOnOnOptionsChanged;
                 _gameMessageReader.Stop();
             };
+        }
+        public PlayWindow()
+        {
+            GameSettings = Program.GameSettings;
+            IsHost = Program.IsHost;
+            GameMessages = new ObservableCollection<IGameMessage>();
+            _gameMessageReader = new GameMessageDispatcherReader(Program.GameMess);
+            var isLocal = Program.GameEngine.IsLocal;
+            DataContext = Program.GameEngine;
+
+            ReplayEngine = Program.GameEngine.ReplayEngine;
+
+            InitializeComponent();
+
+
+            if (Program.GameEngine.IsReplay) {
+                foreach (var eve in ReplayEngine.AllEvents) {
+                    if (eve.Type == ReplayEventType.NextTurn) {
+                        ReplaySlider.Ticks.Add(eve.Time.Ticks);
+                    }
+                }
+
+                ReplayControls.IsVisible =true;
+            } else {
+                ReplayControls.IsVisible = false;
+            }
+
+            _isLocal = isLocal;
+            
 
 
             //this.chat.NewMessage = x =>

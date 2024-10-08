@@ -17,6 +17,7 @@ public class MainActivity : AvaloniaMainActivity<App>
 {
     protected override AppBuilder CustomizeAppBuilder(AppBuilder builder)
     {
+        
         Prefs.Store = new SecureStoragePreferencesStore();
         return base.CustomizeAppBuilder(builder)
             .WithInterFont();

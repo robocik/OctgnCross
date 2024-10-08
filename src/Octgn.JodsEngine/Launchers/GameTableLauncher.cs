@@ -12,7 +12,10 @@ using Octgn.Library;
 using Octgn.Online.Hosting;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 using Octgn.Communication;
+using Octgn.JodsEngine.Play;
 using Octgn.UI;
 
 namespace Octgn.Launchers
@@ -61,11 +64,9 @@ namespace Octgn.Launchers
         private void StartGame()
         {
             Play.Player.OnLocalPlayerWelcomed -= this.PlayerOnOnLocalPlayerWelcomed;
-   //          WindowManager.PlayWindow = new PlayWindow();
-   //          Application.Current.MainWindow = WindowManager.PlayWindow;
-			// WindowManager.PlayWindow.Show();
-   //          WindowManager.PlayWindow.Closed += PlayWindowOnClosed;
-                MyHelper.NotImplemented();
+            WindowManager.PlayWindow = new PlayWindow();
+			WindowManager.PlayWindow.Show();
+            WindowManager.PlayWindow.Closed += PlayWindowOnClosed;
    
         }
 
@@ -99,6 +100,7 @@ namespace Octgn.Launchers
             Program.IsHost = true;
             Program.GameEngine = new GameEngine(game, Prefs.Nickname, false,password,true);
 
+            
             var ip = IPAddress.Parse("127.0.0.1");
 
             for (var i = 0; i < 5; i++)

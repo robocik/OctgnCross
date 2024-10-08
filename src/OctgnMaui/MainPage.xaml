@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="OctgnMaui.MainPage">
+
+    <Border Background="#aa333333" >
+        <Grid x:Name="MainGrid" Margin="10" Grid.Row="1" Background="{x:Null}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="378*" />
+                <ColumnDefinition Width="375*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0" />
+                <RowDefinition Height="0" />
+                <RowDefinition Height="44" />
+                <RowDefinition Height="100*" />
+            </Grid.RowDefinitions>
+            <Border  Margin="10,7,10,0" Grid.Row="2" 
+          IsVisible="{Binding LoginVM.LoggedIn, Converter={StaticResource BooleanInverterConverter}}">
+                <Label FontAttributes="Bold"  x:Name="textBlock1"  Text="Sign In / Register"  FontSize="20" />
+            </Border>
+            <VerticalStackLayout Grid.Row="3" Width="300"  Margin="10,0" IsEnabled="{Binding LoginVM.NotBusy}"
+                    IsVisible="{Binding LoginVM.LoggedIn, Converter={StaticResource BooleanInverterConverter}}">
+                <Border Background="DarkGray"  Padding="5" IsVisible="{Binding LoginVM.HasError}">
+                    <Label  Text="{Binding LoginVM.ErrorString}" 
+                               FontAttributes="Bold" FontSize="12" ></Label>
+                </Border>
+                <Label Text="E-mail -or- Username" FontAttributes="Bold" FontSize="14" Margin="4,6,0,4" />
+                <Editor   Text="{Binding LoginVM.Username, Mode=TwoWay}"/>
+                <Label Text="Password" FontSize="14" FontAttributes="Bold"  Margin="4,6,0,4" />
+                <Editor  
+                     Text="{Binding LoginVM.Password, Mode=TwoWay}"
+                />
+                <Grid>
+                    <Button Text="Sign In" Height="37" x:Name="button1" Width="125"  Clicked="Button1Click" Margin="0,15"
+                    IsEnabled="True" />
+                </Grid>
+                <Label x:Name="labelRegister"  >Register</Label>
+                <Label x:Name="labelForgot"  >Forgot your password?</Label>
+                <Label x:Name="labelSubscribe"  >Subscribe</Label>
+            </VerticalStackLayout>
+        </Grid>
+    </Border>
+
+</ContentPage>

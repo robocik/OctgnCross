@@ -24,6 +24,7 @@ using Octgn.Core;
 using Octgn.Core.DataExtensionMethods;
 
 using log4net;
+using Microsoft.Maui.Storage;
 using Octgn.Library;
 using Octgn.UI;
 
@@ -50,19 +51,41 @@ namespace Octgn.Scripting
 
         public Engine(bool forTesting)
         {
-            Program.GameEngine.ScriptEngine = this;
-            Program.GameEngine.EventProxy = new GameEventProxy(this, Program.GameEngine);
+            if (!forTesting)
+            {
+                Program.GameEngine.ScriptEngine = this;
+                Program.GameEngine.EventProxy = new GameEventProxy(this, Program.GameEngine);    
+            }
+            
         }
 
         public void SetupEngine(bool testing)
         {
             Log.DebugFormat("Creating scripting engine: forTesting={0}", testing);
             //AppDomain sandbox = CreateSandbox(testing);
-            _engine = Python.CreateEngine();
+            var runtime = Python.CreateRuntime();
+            runtime.IO.SetInput(new MemoryStream(), Encoding.Default);
+            _engine = Python.GetEngine(runtime);
             //_engine.SetTrace(OnTraceback);
             _outputWriter = new StreamWriter(_outputStream);
             _engine.Runtime.IO.SetOutput(_outputStream, _outputWriter);
-            _engine.SetSearchPaths(new[] { Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Scripting\Lib") });
+
+            var scriptingFoler = Path.Combine(Config.Instance.DataDirectoryFull, "Scripting");
+            var targetFile = Path.Combine(scriptingFoler, "_abcoll.py");
+            FileHelper.CopyAssetsToInternalStorage("avares://Octgn.JodsEngine/Scripting/Lib/_abcoll.py",targetFile);
+            targetFile = Path.Combine(scriptingFoler, "abc.py");
+            FileHelper.CopyAssetsToInternalStorage("avares://Octgn.JodsEngine/Scripting/Lib/abc.py",targetFile);
+            targetFile = Path.Combine(scriptingFoler, "bisect.py");
+            FileHelper.CopyAssetsToInternalStorage("avares://Octgn.JodsEngine/Scripting/Lib/bisect.py",targetFile);
+            targetFile = Path.Combine(scriptingFoler, "collections.py");
+            FileHelper.CopyAssetsToInternalStorage("avares://Octgn.JodsEngine/Scripting/Lib/collections.py",targetFile);
+            targetFile = Path.Combine(scriptingFoler, "heapq.py");
+            FileHelper.CopyAssetsToInternalStorage("avares://Octgn.JodsEngine/Scripting/Lib/heapq.py",targetFile);
+            targetFile = Path.Combine(scriptingFoler, "keyword.py");
+            FileHelper.CopyAssetsToInternalStorage("avares://Octgn.JodsEngine/Scripting/Lib/keyword.py",targetFile);
+            
+            _engine.SetSearchPaths(new[] { scriptingFoler });
+            
 
             var workingDirectory = Directory.GetCurrentDirectory();
             Log.DebugFormat("Setting working directory: {0}", workingDirectory);
@@ -604,9 +627,9 @@ namespace Octgn.Scripting
             scope.SetVariable("_api", Program.GameEngine.ScriptApi);
             scope.SetVariable("_wd", workingDirectory);
 
-            
             // For convenience reason, the definition of Python API objects is in a seperate file: PythonAPI.py
             _engine.Execute(PropertiesResources.CaseInsensitiveDict, scope);
+            
 
 //            _engine.Execute(
 //                @"

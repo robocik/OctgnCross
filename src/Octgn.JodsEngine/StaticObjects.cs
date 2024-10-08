@@ -29,7 +29,7 @@ public static class Program
 
     internal static IClient Client;
     
-    public static GameMessageDispatcher GameMess { get; internal set; }
+    public static GameMessageDispatcher GameMess { get; set; }
 
     public static ILauncher Launcher { get; internal set; }
 

@@ -6,6 +6,7 @@ using log4net;
 using System;
 using System.IO;
 using System.Reflection;
+using Microsoft.Maui.Storage;
 
 namespace Octgn.Library.Providers
 {
@@ -19,9 +20,12 @@ namespace Octgn.Library.Providers
 
         private readonly string _defaultDataDirectory;
 
-        public DataDirectoryProvider() {
-            _rootDirectory = Path.GetDirectoryName(typeof(Config).Assembly.Location);
-
+        public DataDirectoryProvider()
+        {
+            var dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string appDataDirectory = Path.Combine(dataFolder, "OctgnCross");
+            // _rootDirectory = FileSystem.Current.AppDataDirectory;//Path.GetDirectoryName(typeof(Config).Assembly.Location);
+            _rootDirectory = appDataDirectory;
             _dataPathFile = Path.Combine(_rootDirectory, "data.path");
 
             _defaultDataDirectory = "Data";

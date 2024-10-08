@@ -1,44 +1,49 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross", "OctgnCross\OctgnCross\OctgnCross.csproj", "{6B43A541-91F6-4112-8EB6-064A6EDDCDA8}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 14.0.24720.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross", "OctgnCross\OctgnCross\OctgnCross.csproj", "{6B43A541-91F6-4112-8EB6-064A6EDDCDA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Android", "OctgnCross\OctgnCross.Android\OctgnCross.Android.csproj", "{FE260DE1-E86F-4DBF-892D-7545EB1CDB27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.Android", "OctgnCross\OctgnCross.Android\OctgnCross.Android.csproj", "{FE260DE1-E86F-4DBF-892D-7545EB1CDB27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Desktop", "OctgnCross\OctgnCross.Desktop\OctgnCross.Desktop.csproj", "{05FD3AE3-A0D2-438B-99F7-8FF5B5C988A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.Desktop", "OctgnCross\OctgnCross.Desktop\OctgnCross.Desktop.csproj", "{05FD3AE3-A0D2-438B-99F7-8FF5B5C988A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.iOS", "OctgnCross\OctgnCross.iOS\OctgnCross.iOS.csproj", "{D43584CF-4902-49CA-A53A-337FC0EC93DF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.iOS", "OctgnCross\OctgnCross.iOS\OctgnCross.iOS.csproj", "{D43584CF-4902-49CA-A53A-337FC0EC93DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Browser", "OctgnCross\OctgnCross.Browser\OctgnCross.Browser.csproj", "{E1ED3A7D-2972-4717-9C2B-F1BABC135D57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.Browser", "OctgnCross\OctgnCross.Browser\OctgnCross.Browser.csproj", "{E1ED3A7D-2972-4717-9C2B-F1BABC135D57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Communication", "Octgn.Communication\Octgn.Communication.csproj", "{F989217F-7163-4E2D-822F-9B4D2856585C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octgn.Communication", "Octgn.Communication\Octgn.Communication.csproj", "{F989217F-7163-4E2D-822F-9B4D2856585C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DAB05253-50BE-4D94-9914-5E709AE4C6C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.Communication.Tests", "Tests\OctgnCross.Communication.Tests\OctgnCross.Communication.Tests.csproj", "{796ECE56-FBE2-481B-8107-904903869032}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.Communication.Tests", "Tests\OctgnCross.Communication.Tests\OctgnCross.Communication.Tests.csproj", "{796ECE56-FBE2-481B-8107-904903869032}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Online", "Online", "{63545B58-4E4C-4A8B-8E54-9B042322489E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Online", "Online\Octgn.Online\Octgn.Online.csproj", "{518753BC-14BD-445B-93C1-04B4C4F164AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octgn.Online", "Online\Octgn.Online\Octgn.Online.csproj", "{518753BC-14BD-445B-93C1-04B4C4F164AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Library", "Octgn.Library\Octgn.Library.csproj", "{7422505A-C6EB-4EBC-9CC3-A443A7E30B5D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octgn.Library", "Octgn.Library\Octgn.Library.csproj", "{7422505A-C6EB-4EBC-9CC3-A443A7E30B5D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.ProxyGenerator", "OctgnCross.ProxyGenerator\OctgnCross.ProxyGenerator.csproj", "{91B420E0-0307-4668-B7F4-EFED9CF883C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.ProxyGenerator", "OctgnCross.ProxyGenerator\OctgnCross.ProxyGenerator.csproj", "{91B420E0-0307-4668-B7F4-EFED9CF883C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.DataNew", "OctgnCross.DataNew\OctgnCross.DataNew.csproj", "{91F144EB-F5F5-4C1C-9499-86A8B8BC3290}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.DataNew", "OctgnCross.DataNew\OctgnCross.DataNew.csproj", "{91F144EB-F5F5-4C1C-9499-86A8B8BC3290}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Server", "Octgn.Server\Octgn.Server.csproj", "{DDB5EB65-7CE0-4468-9E37-1BE4E35D2CB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octgn.Server", "Octgn.Server\Octgn.Server.csproj", "{DDB5EB65-7CE0-4468-9E37-1BE4E35D2CB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.Core", "Octgn.Core\Octgn.Core.csproj", "{4752504C-1604-4158-AB79-F7FD89854178}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octgn.Core", "Octgn.Core\Octgn.Core.csproj", "{4752504C-1604-4158-AB79-F7FD89854178}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.WindowsDesktopUtilities", "OctgnCross.WindowsDesktopUtilities\OctgnCross.WindowsDesktopUtilities.csproj", "{FB34FB2C-DBA9-44C5-98A2-9EF02DB09735}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.WindowsDesktopUtilities", "OctgnCross.WindowsDesktopUtilities\OctgnCross.WindowsDesktopUtilities.csproj", "{FB34FB2C-DBA9-44C5-98A2-9EF02DB09735}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnCross.LogExporter", "OctgnCross.LogExporter\OctgnCross.LogExporter.csproj", "{53FF2D28-544B-4241-9B8A-73A06741AEAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OctgnCross.LogExporter", "OctgnCross.LogExporter\OctgnCross.LogExporter.csproj", "{53FF2D28-544B-4241-9B8A-73A06741AEAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfCircularProgressBar", "WpfCircularProgressBar\WpfCircularProgressBar.csproj", "{3981A614-9827-4800-8DEB-ED1DC8720767}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfCircularProgressBar", "WpfCircularProgressBar\WpfCircularProgressBar.csproj", "{3981A614-9827-4800-8DEB-ED1DC8720767}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.JodsEngine", "Octgn.JodsEngine\Octgn.JodsEngine.csproj", "{D43D2B26-7C43-41DA-AD3E-CFC4CC334449}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octgn.JodsEngine", "Octgn.JodsEngine\Octgn.JodsEngine.csproj", "{D43D2B26-7C43-41DA-AD3E-CFC4CC334449}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octgn.UI", "Octgn.UI\Octgn.UI.csproj", "{0533FD2D-6C67-4CF8-A856-7DD5720582EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octgn.UI", "Octgn.UI\Octgn.UI.csproj", "{0533FD2D-6C67-4CF8-A856-7DD5720582EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OctgnMaui", "OctgnMaui\OctgnMaui.csproj", "{7872485E-AFEB-48ED-B137-57A093737A88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -122,9 +127,21 @@ Global
 		{0533FD2D-6C67-4CF8-A856-7DD5720582EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0533FD2D-6C67-4CF8-A856-7DD5720582EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0533FD2D-6C67-4CF8-A856-7DD5720582EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7872485E-AFEB-48ED-B137-57A093737A88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7872485E-AFEB-48ED-B137-57A093737A88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7872485E-AFEB-48ED-B137-57A093737A88}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{7872485E-AFEB-48ED-B137-57A093737A88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7872485E-AFEB-48ED-B137-57A093737A88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7872485E-AFEB-48ED-B137-57A093737A88}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{796ECE56-FBE2-481B-8107-904903869032} = {DAB05253-50BE-4D94-9914-5E709AE4C6C4}
 		{518753BC-14BD-445B-93C1-04B4C4F164AC} = {63545B58-4E4C-4A8B-8E54-9B042322489E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {88F701F1-5529-42AC-92E5-0F3464EF4434}
 	EndGlobalSection
 EndGlobal

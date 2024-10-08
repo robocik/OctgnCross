@@ -9,6 +9,7 @@ using System.Reflection;
 using log4net;
 using Octgn.Library.Providers;
 using  System.Runtime.Caching;
+using Microsoft.Maui.Storage;
 
 namespace Octgn.Library
 {
@@ -37,12 +38,11 @@ namespace Octgn.Library
         public Config() {
             try {
                 _isConstructing = true;
-
-                var ass = typeof(Config).Assembly;
-
-                var assFile = new FileInfo(ass.Location);
-
-                WorkingDirectory = assFile.Directory.FullName;
+                var dataFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string appDataDirectory = Path.Combine(dataFolder, "OctgnCross");
+                Directory.CreateDirectory(appDataDirectory);
+                // WorkingDirectory = FileSystem.Current.AppDataDirectory;//somehow doesn't work on windows
+                WorkingDirectory =appDataDirectory;
 
                 _cacheLocker = new ReaderWriterLockSlim();
                 _locker = new ReaderWriterLockSlim();

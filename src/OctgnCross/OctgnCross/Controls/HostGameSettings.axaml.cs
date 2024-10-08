@@ -10,6 +10,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using DialogHostAvalonia;
 using log4net;
+using MsBox.Avalonia;
 using Octgn;
 using Octgn.Communication;
 using Octgn.Core;
@@ -386,13 +387,16 @@ public partial class HostGameSettings :  UserControlBase,IDisposable
 
     private async void ButtonHostGameStartClick(object sender, RoutedEventArgs e)
     {
+        
         this.ValidateFields();
+       
         if (this.HasError) return;
 
         var error = "";
         try {
             this.StartWait();
             this.Game = (ComboBoxGame.SelectedItem as DataGameViewModel).GetGame();
+
             this.Game = GameSelector.Game;
             this.Gamename = TextBoxGameName.Text;
             this.Password = PasswordGame.Text;

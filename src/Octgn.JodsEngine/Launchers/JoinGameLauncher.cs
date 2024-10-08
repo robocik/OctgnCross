@@ -9,6 +9,7 @@ using System.Net;
 using Octgn.Library.Exceptions;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using MsBox.Avalonia;
 using Octgn.Core;
 using Octgn.JodsEngine.Play;
 using Octgn.JodsEngine.Windows;
@@ -41,6 +42,7 @@ namespace Octgn.Launchers
             var hostedGame = _game;
 
             try {
+                
                 Program.CurrentHostedGame = hostedGame;
                 var password = string.Empty;
                 if (Program.IsHost = _isHost) {
@@ -81,9 +83,10 @@ namespace Octgn.Launchers
                 }
 
                 Window window = null;
-                await Dispatcher.UIThread.InvokeAsync(() => {
-                    window = WindowManager.PlayWindow = new PlayWindow();
-                    
+                await Dispatcher.UIThread.InvokeAsync(async () => {
+                    var wnd=new PlayWindow();
+                    window = WindowManager.PlayWindow = wnd;
+                    await wnd.Init();
                     window.Closed += PlayWindow_Closed;
                     
                     window.Show();

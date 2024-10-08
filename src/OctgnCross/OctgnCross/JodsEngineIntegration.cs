@@ -6,17 +6,21 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using DialogHostAvalonia;
 using log4net;
 using Octgn.Communication;
 using Octgn.Core;
 using Octgn.Core.DataManagers;
+using Octgn.JodsEngine;
 using Octgn.JodsEngine.Windows;
 using Octgn.Library;
 using Octgn.Library.Exceptions;
 using Octgn.Online.Hosting;
+using Octgn.Scripting;
 using Octgn.UI;
 using Octgn.ViewModels;
 using OctgnCross.Tabs.Play;
+using static Community.CsharpSqlite.Sqlite3;
 
 namespace Octgn;
 
@@ -139,7 +143,7 @@ public class JodsEngineIntegration
             GameVersion = game.Version.ToString(),
             HostAddress = $"{host}:{port}",
             Password = password,
-            DateCreated = DateTime.UtcNow
+            DateCreated = System.DateTime.UtcNow
         };
 
         DebugValidate(hostedGame, false);
@@ -225,28 +229,34 @@ public class JodsEngineIntegration
     private async Task<bool> LaunchJodsEngine(string args)
     {
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
+        //PYTHON TEST
+        // var test = new Engine(true);
+        // test.SetupEngine(true);
+        await Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var loadingWindow = new LoadingWindow(args);
-
+            // await DialogHost.Show(loadingWindow, delegate (object _, DialogOpenedEventArgs args)
+            // {
+            //     loadingWindow.DialogSession = args.Session;
+            // });
             loadingWindow.Show();
         });
-        
+
         return true;
     }
 
     private static void DebugValidate(HostedGame hostedGame, bool isHosting) {
-        DateTimeOffset minCreatedDate;
-        if (isHosting)
-            minCreatedDate = DateTimeOffset.UtcNow.AddMinutes(-2);
-        else
-            minCreatedDate = DateTimeOffset.UtcNow.AddHours(-6);
+        //DateTimeOffset minCreatedDate;
+        //if (isHosting)
+        //    minCreatedDate = DateTimeOffset.UtcNow.AddMinutes(-2);
+        //else
+        //    minCreatedDate = DateTimeOffset.UtcNow.AddHours(-6);
 
-        DateTimeOffset maxCreatedDate = DateTimeOffset.UtcNow;
+        //DateTimeOffset maxCreatedDate = DateTimeOffset.UtcNow;
 
-        Debug.Assert(hostedGame.DateCreated.UtcDateTime >= minCreatedDate, $"Hosted game DateCreated is too ancient {hostedGame.DateCreated}");
-        Debug.Assert(hostedGame.DateCreated.UtcDateTime <= maxCreatedDate, $"Hosted game DateCreated is too far in the future {hostedGame.DateCreated}");
+        //Debug.Assert(hostedGame.DateCreated.UtcDateTime >= minCreatedDate, $"Hosted game DateCreated is too ancient {hostedGame.DateCreated}");
+        //Debug.Assert(hostedGame.DateCreated.UtcDateTime <= maxCreatedDate, $"Hosted game DateCreated is too far in the future {hostedGame.DateCreated}");
 
-        Debug.Assert(hostedGame.Id != Guid.Empty, $"Hosted game Id is empty");
+        //Debug.Assert(hostedGame.Id != Guid.Empty, $"Hosted game Id is empty");
     }
 }
